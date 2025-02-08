@@ -76,7 +76,7 @@ const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, cre
         setUsersList(allLikes);
     }
     const handleDeletePost = () => {
-        dispatch(deletePost(_id, true));
+        dispatch(deletePost(_id));
         setDeleteModal(false)
     }
 

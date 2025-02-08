@@ -149,10 +149,10 @@ export const deletePost = (postId, isHome= false) => async (dispatch) => {
                 payload: postId,
             })
         }else{
-            dispatch({
-                type: DELETE_POST_SUCCESS,
-                payload: data.success,
-            });
+        dispatch({
+            type: DELETE_POST_SUCCESS,
+            payload: data.success,
+        });
         }
 
     } catch (error) {
