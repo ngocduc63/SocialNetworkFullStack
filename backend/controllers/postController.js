@@ -144,15 +144,29 @@ exports.getPostsOfFollowing = catchAsync(async (req, res, next) => {
     const skipPosts = 4 * (currentPage - 1);
 
     const totalPosts = await Post.find({
-        postedBy: {
-            $in: user.following
-        }
+        $or: [
+            {
+                postedBy: {
+                    $in: user.following
+                }
+            },
+            {
+                postedBy: user._id
+            }
+        ]
     }).countDocuments();
 
     const posts = await Post.find({
-        postedBy: {
-            $in: user.following
-        }
+        $or: [
+            {
+                postedBy: {
+                    $in: user.following
+                }
+            },
+            {
+                postedBy: user._id
+            }
+        ]
     }).populate("postedBy likes").populate({
         path: 'comments',
         populate: {

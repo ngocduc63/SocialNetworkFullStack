@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { addComment, likePost, savePost } from '../../actions/postAction';
-import { BASE_POST_IMAGE_URL, BASE_PROFILE_IMAGE_URL } from '../../utils/constants'
+import {BASE_POST_IMAGE_URL, BASE_PROFILE_IMAGE_URL, SOCKET_ENDPOINT} from '../../utils/constants'
 import { likeFill } from '../Navbar/SvgIcons';
 import { commentIcon, emojiIcon, likeIconOutline, moreIcons, saveIconFill, saveIconOutline, shareIcon } from './SvgIcons'
 import { Picker } from 'emoji-mart'
 import ScrollToBottom from 'react-scroll-to-bottom';
 import axios from 'axios';
 import moment from 'moment';
+import {io} from "socket.io-client";
 
 const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, createdAt, setUsersDialog, setUsersList }) => {
 
@@ -21,6 +22,7 @@ const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, cre
     const [allLikes, setAllLikes] = useState(likes);
     const [allComments, setAllComments] = useState(comments);
     const [allSavedBy, setAllSavedBy] = useState(savedBy);
+    const socket = useRef(null);
 
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -30,11 +32,22 @@ const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, cre
 
     const [likeEffect, setLikeEffect] = useState(false);
 
+    useEffect(()=> {
+        socket.current = io(SOCKET_ENDPOINT);
+        socket.current.on("updatePost", (data) => {
+            if(data.action === "like") {
+                setAllLikes(data.data.post.likes)
+            }else if(data.action === "comment" ) {}
+
+        });
+    },[])
+
     const handleLike = async () => {
         setLiked(!liked);
         await dispatch(likePost(_id));
         const { data } = await axios.get(`/api/v1/post/detail/${_id}`)
-        setAllLikes(data.post.likes)
+        //socket send like
+        socket?.current.emit("likePost", data);
     }
 
     const handleComment = async (e) => {

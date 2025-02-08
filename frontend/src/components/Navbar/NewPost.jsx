@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { addNewPost, clearErrors } from '../../actions/postAction';
 import { NEW_POST_RESET } from '../../constants/postConstants';
 import { emojiIcon } from '../Home/SvgIcons';
+import {BASE_PROFILE_IMAGE_URL} from "../../utils/constants";
 
 const NewPost = ({ newPost, setNewPost }) => {
 
@@ -106,7 +107,7 @@ const NewPost = ({ newPost, setNewPost }) => {
                     <div className="flex flex-col border-l sm:h-[80vh] w-full bg-white">
 
                         <div className="flex gap-3 px-3 py-2 items-center">
-                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={user.avatar} alt="avatar" />
+                            <img draggable="false" className="w-11 h-11 rounded-full object-cover" src={BASE_PROFILE_IMAGE_URL + user.avatar} alt="avatar" />
                             <span className="text-black text-sm font-semibold">{user.username}</span>
                         </div>
 

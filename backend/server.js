@@ -43,6 +43,18 @@ io.on("connection", (socket) => {
         io.emit("getUsers", users);
     });
 
+    // Nhận sự kiện khi có người like bài post
+    socket.on("likePost", (data) => {
+        // Cập nhật dữ liệu trong DB nếu cần
+        io.emit("updatePost", { data, action: "like" });
+    });
+
+    // Nhận sự kiện khi có người bình luận bài post
+    socket.on("commentPost", ({ postId, userId, comment }) => {
+        // Cập nhật dữ liệu trong DB nếu cần
+        io.emit("updatePost", { postId, action: "comment", userId, comment });
+    });
+
     // get and send message
     socket.on("sendMessage", ({ senderId, receiverId, content }) => {
 
