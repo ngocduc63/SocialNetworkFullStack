@@ -90,7 +90,7 @@ export const postOfFollowingReducer = (state = { posts: [] }, { type, payload })
         case POST_DELETE_SUCCESS:
             return {
                 loading: false,
-                posts: state.posts.filter(post => post._id !== payload),
+                posts: state.posts.filter(post => post._id !== payload.post._id),
                 totalPosts: state.totalPosts - 1,
             };
         case POST_FOLLOWING_RESET:
