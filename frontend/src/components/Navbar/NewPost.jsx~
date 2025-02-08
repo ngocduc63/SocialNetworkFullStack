@@ -58,8 +58,6 @@ const NewPost = ({ newPost, setNewPost }) => {
         formData.set("post", postImage);
 
         dispatch(addNewPost(formData));
-
-
     }
 
     useEffect(() => {

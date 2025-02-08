@@ -84,7 +84,7 @@ export const postOfFollowingReducer = (state = { posts: [] }, { type, payload })
         case POST_ADD_NEW_SUCCESS:
             return {
                 loading: false,
-                posts: [...state.posts, ...payload.post],
+                posts: [payload.post, ...state.posts],
                 totalPosts: state.totalPosts + 1,
             };
         case POST_FOLLOWING_RESET:
