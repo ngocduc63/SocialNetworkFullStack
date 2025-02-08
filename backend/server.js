@@ -50,9 +50,9 @@ io.on("connection", (socket) => {
     });
 
     // Nhận sự kiện khi có người bình luận bài post
-    socket.on("commentPost", ({ postId, userId, comment }) => {
+    socket.on("commentPost", (data) => {
         // Cập nhật dữ liệu trong DB nếu cần
-        io.emit("updatePost", { postId, action: "comment", userId, comment });
+        io.emit("updatePost", { data, action: "comment" });
     });
 
     // get and send message

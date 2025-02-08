@@ -37,7 +37,9 @@ const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, cre
         socket.current.on("updatePost", (data) => {
             if(data.action === "like") {
                 setAllLikes(data.data.post.likes)
-            }else if(data.action === "comment" ) {}
+            }else if(data.action === "comment" ) {
+                setAllComments(data.data.post.comments)
+            }
 
         });
     },[])
@@ -52,12 +54,15 @@ const PostItem = ({ _id, caption, likes, comments, image, postedBy, savedBy, cre
 
     const handleComment = async (e) => {
         e.preventDefault();
+
+        if (!comment.trim()) {
+            return;
+        }
         await dispatch(addComment(_id, comment));
         setComment("");
-        const { data } = await axios.get(`/api/v1/post/detail/${_id}`)
-        setAllComments(data.post.comments)
+        const { data } = await axios.get(`/api/v1/post/detail/${_id}`);
+        socket?.current.emit("commentPost", data);
     }
-
     const handleSave = async () => {
         setSaved(!saved);
         await dispatch(savePost(_id));
