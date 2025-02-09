@@ -1,39 +1,39 @@
 import {
-    CLEAR_ERRORS,
-    DELETE_POST_FAIL,
-    DELETE_POST_REQUEST,
-    DELETE_POST_RESET,
-    DELETE_POST_SUCCESS,
-    LIKE_UNLIKE_POST_FAIL,
-    LIKE_UNLIKE_POST_REQUEST,
-    LIKE_UNLIKE_POST_RESET,
-    LIKE_UNLIKE_POST_SUCCESS,
-    NEW_COMMENT_FAIL,
-    NEW_COMMENT_REQUEST,
-    NEW_COMMENT_RESET,
-    NEW_COMMENT_SUCCESS,
-    NEW_POST_FAIL,
-    NEW_POST_REQUEST,
-    NEW_POST_RESET,
-    NEW_POST_SUCCESS,
-    POST_ADD_NEW_SUCCESS, POST_DELETE_SUCCESS,
-    POST_DETAILS_FAIL,
-    POST_DETAILS_REQUEST,
-    POST_DETAILS_RESET,
-    POST_DETAILS_SUCCESS,
-    POST_FOLLOWING_FAIL,
-    POST_FOLLOWING_REQUEST,
-    POST_FOLLOWING_RESET,
-    POST_FOLLOWING_SUCCESS,
-    SAVE_UNSAVE_POST_FAIL,
-    SAVE_UNSAVE_POST_REQUEST,
-    SAVE_UNSAVE_POST_RESET,
-    SAVE_UNSAVE_POST_SUCCESS
+  CLEAR_ERRORS,
+  DELETE_POST_FAIL,
+  DELETE_POST_REQUEST,
+  DELETE_POST_RESET,
+  DELETE_POST_SUCCESS,
+  LIKE_UNLIKE_POST_FAIL,
+  LIKE_UNLIKE_POST_REQUEST,
+  LIKE_UNLIKE_POST_RESET,
+  LIKE_UNLIKE_POST_SUCCESS,
+  NEW_COMMENT_FAIL,
+  NEW_COMMENT_REQUEST,
+  NEW_COMMENT_RESET,
+  NEW_COMMENT_SUCCESS,
+  NEW_POST_FAIL,
+  NEW_POST_REQUEST,
+  NEW_POST_RESET,
+  NEW_POST_SUCCESS,
+  POST_ADD_NEW_SUCCESS,
+  POST_DELETE_SUCCESS,
+  POST_DETAILS_FAIL,
+  POST_DETAILS_REQUEST,
+  POST_DETAILS_RESET,
+  POST_DETAILS_SUCCESS,
+  POST_FOLLOWING_FAIL,
+  POST_FOLLOWING_REQUEST,
+  POST_FOLLOWING_RESET,
+  POST_FOLLOWING_SUCCESS,
+  SAVE_UNSAVE_POST_FAIL,
+  SAVE_UNSAVE_POST_REQUEST,
+  SAVE_UNSAVE_POST_RESET,
+  SAVE_UNSAVE_POST_SUCCESS,
 } from "../constants/postConstants";
 
-
 // New Post Reducer
-export const newPostReducer = (state = { post: {} }, { type, payload }) => {
+export const newPostReducer = (state = {post: {}}, {type, payload}) => {
     switch (type) {
         case NEW_POST_REQUEST:
             return {
@@ -65,10 +65,12 @@ export const newPostReducer = (state = { post: {} }, { type, payload }) => {
         default:
             return state;
     }
-}
+};
 
-
-export const postOfFollowingReducer = (state = { posts: [] }, { type, payload }) => {
+export const postOfFollowingReducer = (
+    state = {posts: []},
+    {type, payload},
+) => {
     switch (type) {
         case POST_FOLLOWING_REQUEST:
             return {
@@ -90,7 +92,7 @@ export const postOfFollowingReducer = (state = { posts: [] }, { type, payload })
         case POST_DELETE_SUCCESS:
             return {
                 loading: false,
-                posts: state.posts.filter(post => post._id !== payload),
+                posts: state.posts.filter((post) => post._id !== payload),
                 totalPosts: state.totalPosts - 1,
             };
         case POST_FOLLOWING_RESET:
@@ -113,9 +115,9 @@ export const postOfFollowingReducer = (state = { posts: [] }, { type, payload })
         default:
             return state;
     }
-}
+};
 
-export const likePostReducer = (state = {}, { type, payload }) => {
+export const likePostReducer = (state = {}, {type, payload}) => {
     switch (type) {
         case LIKE_UNLIKE_POST_REQUEST:
             return {
@@ -148,9 +150,9 @@ export const likePostReducer = (state = {}, { type, payload }) => {
         default:
             return state;
     }
-}
+};
 
-export const newCommentReducer = (state = {}, { type, payload }) => {
+export const newCommentReducer = (state = {}, {type, payload}) => {
     switch (type) {
         case NEW_COMMENT_REQUEST:
             return {
@@ -181,9 +183,9 @@ export const newCommentReducer = (state = {}, { type, payload }) => {
         default:
             return state;
     }
-}
+};
 
-export const savePostReducer = (state = {}, { type, payload }) => {
+export const savePostReducer = (state = {}, {type, payload}) => {
     switch (type) {
         case SAVE_UNSAVE_POST_REQUEST:
             return {
@@ -216,9 +218,9 @@ export const savePostReducer = (state = {}, { type, payload }) => {
         default:
             return state;
     }
-}
+};
 
-export const deletePostReducer = (state = {}, { type, payload }) => {
+export const deletePostReducer = (state = {}, {type, payload}) => {
     switch (type) {
         case DELETE_POST_REQUEST:
             return {
@@ -249,9 +251,9 @@ export const deletePostReducer = (state = {}, { type, payload }) => {
         default:
             return state;
     }
-}
+};
 
-export const postDetailsReducer = (state = {}, { type, payload }) => {
+export const postDetailsReducer = (state = {}, {type, payload}) => {
     switch (type) {
         case POST_DETAILS_REQUEST:
             return {
@@ -272,7 +274,7 @@ export const postDetailsReducer = (state = {}, { type, payload }) => {
         case POST_DETAILS_RESET:
             return {
                 loading: false,
-                post: {}
+                post: {},
             };
         case CLEAR_ERRORS:
             return {
@@ -282,4 +284,4 @@ export const postDetailsReducer = (state = {}, { type, payload }) => {
         default:
             return state;
     }
-}
+};

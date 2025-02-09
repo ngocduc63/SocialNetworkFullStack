@@ -1,4 +1,3 @@
-
 export const ALL_CHATS_REQUEST = "ALL_CHATS_REQUEST";
 export const ALL_CHATS_SUCCESS = "ALL_CHATS_SUCCESS";
 export const ALL_CHATS_FAIL = "ALL_CHATS_FAIL";
