@@ -1,6 +1,6 @@
-import PostsContainer from './PostsContainer'
-import Sidebar from './Sidebar/Sidebar'
-import MetaData from '../Layouts/MetaData';
+import PostsContainer from "./PostsContainer";
+import Sidebar from "./Sidebar/Sidebar";
+import MetaData from "../Layouts/MetaData";
 
 const Home = () => {
   return (
@@ -12,7 +12,7 @@ const Home = () => {
         <Sidebar />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

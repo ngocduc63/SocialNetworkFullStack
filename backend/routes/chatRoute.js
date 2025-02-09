@@ -1,6 +1,6 @@
-const express = require('express');
-const { newChat, getChats } = require('../controllers/chatController');
-const { isAuthenticated } = require('../middlewares/auth');
+const express = require("express");
+const { newChat, getChats } = require("../controllers/chatController");
+const { isAuthenticated } = require("../middlewares/auth");
 
 const router = express();
 

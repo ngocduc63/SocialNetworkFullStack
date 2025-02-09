@@ -1,17 +1,16 @@
-const Post = require('../models/postModel');
-const User = require('../models/userModel');
-const catchAsync = require('../middlewares/catchAsync');
-const ErrorHandler = require('../utils/errorHandler');
-const deleteFile = require('../utils/deleteFile');
+const Post = require("../models/postModel");
+const User = require("../models/userModel");
+const catchAsync = require("../middlewares/catchAsync");
+const ErrorHandler = require("../utils/errorHandler");
+const deleteFile = require("../utils/deleteFile");
 
 // Create New Post
 exports.newPost = catchAsync(async (req, res, next) => {
-
     const postData = {
         caption: req.body.caption,
         image: req.file.filename,
-        postedBy: req.user._id
-    }
+        postedBy: req.user._id,
+    };
 
     const post = await Post.create(postData);
 
@@ -27,7 +26,6 @@ exports.newPost = catchAsync(async (req, res, next) => {
 
 // Like or Unlike Post
 exports.likeUnlikePost = catchAsync(async (req, res, next) => {
-
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -42,23 +40,22 @@ exports.likeUnlikePost = catchAsync(async (req, res, next) => {
 
         return res.status(200).json({
             success: true,
-            message: "Post Unliked"
+            message: "Post Unliked",
         });
     } else {
-        post.likes.push(req.user._id)
+        post.likes.push(req.user._id);
 
         await post.save();
 
         return res.status(200).json({
             success: true,
-            message: "Post Liked"
+            message: "Post Liked",
         });
     }
 });
 
 // Delete Post
 exports.deletePost = catchAsync(async (req, res, next) => {
-
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -69,7 +66,7 @@ exports.deletePost = catchAsync(async (req, res, next) => {
         return next(new ErrorHandler("Unauthorized", 401));
     }
 
-    await deleteFile('posts/', post.image);
+    await deleteFile("posts/", post.image);
 
     await post.remove();
 
@@ -81,13 +78,12 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: "Post Deleted"
+        message: "Post Deleted",
     });
 });
 
 // Update Caption
 exports.updateCaption = catchAsync(async (req, res, next) => {
-
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -104,13 +100,12 @@ exports.updateCaption = catchAsync(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: "Post Updated"
+        message: "Post Updated",
     });
 });
 
 // Add Comment
 exports.newComment = catchAsync(async (req, res, next) => {
-
     const post = await Post.findById(req.params.id);
 
     if (!post) {
@@ -123,21 +118,20 @@ exports.newComment = catchAsync(async (req, res, next) => {
 
     post.comments.push({
         user: req.user._id,
-        comment: req.body.comment
+        comment: req.body.comment,
     });
 
     await post.save();
 
     return res.status(200).json({
         success: true,
-        message: "Comment Added"
+        message: "Comment Added",
     });
 });
 
 // Posts of Following
 exports.getPostsOfFollowing = catchAsync(async (req, res, next) => {
-
-    const user = await User.findById(req.user._id)
+    const user = await User.findById(req.user._id);
 
     const currentPage = Number(req.query.page) || 1;
 
@@ -147,44 +141,48 @@ exports.getPostsOfFollowing = catchAsync(async (req, res, next) => {
         $or: [
             {
                 postedBy: {
-                    $in: user.following
-                }
+                    $in: user.following,
+                },
             },
             {
-                postedBy: user._id
-            }
-        ]
+                postedBy: user._id,
+            },
+        ],
     }).countDocuments();
 
     const posts = await Post.find({
         $or: [
             {
                 postedBy: {
-                    $in: user.following
-                }
+                    $in: user.following,
+                },
             },
             {
-                postedBy: user._id
-            }
-        ]
-    }).populate("postedBy likes").populate({
-        path: 'comments',
-        populate: {
-            path: 'user'
-        }
-    }).sort({ $natural: -1 }).limit(4).skip(skipPosts)
+                postedBy: user._id,
+            },
+        ],
+    })
+        .populate("postedBy likes")
+        .populate({
+            path: "comments",
+            populate: {
+                path: "user",
+            },
+        })
+        .sort({$natural: -1})
+        .limit(4)
+        .skip(skipPosts);
 
     return res.status(200).json({
         success: true,
         posts: posts,
-        totalPosts
+        totalPosts,
     });
 });
 
 // Save or Unsave Post
 exports.saveUnsavePost = catchAsync(async (req, res, next) => {
-
-    const user = await User.findById(req.user._id)
+    const user = await User.findById(req.user._id);
 
     const post = await Post.findById(req.params.id);
 
@@ -193,38 +191,41 @@ exports.saveUnsavePost = catchAsync(async (req, res, next) => {
     }
 
     if (user.saved.includes(post._id.toString())) {
-        user.saved = user.saved.filter((p) => p.toString() !== post._id.toString())
-        post.savedBy = post.savedBy.filter((p) => p.toString() !== req.user._id.toString())
+        user.saved = user.saved.filter((p) => p.toString() !== post._id.toString());
+        post.savedBy = post.savedBy.filter(
+            (p) => p.toString() !== req.user._id.toString(),
+        );
         await user.save();
         await post.save();
 
         return res.status(200).json({
             success: true,
-            message: "Post Unsaved"
+            message: "Post Unsaved",
         });
     } else {
-        user.saved.push(post._id)
-        post.savedBy.push(req.user._id)
+        user.saved.push(post._id);
+        post.savedBy.push(req.user._id);
 
         await user.save();
         await post.save();
 
         return res.status(200).json({
             success: true,
-            message: "Post Saved"
+            message: "Post Saved",
         });
     }
 });
 
 // Get Post Details
 exports.getPostDetails = catchAsync(async (req, res, next) => {
-
-    const post = await Post.findById(req.params.id).populate("postedBy likes").populate({
-        path: 'comments',
-        populate: {
-            path: 'user'
-        }
-    });
+    const post = await Post.findById(req.params.id)
+        .populate("postedBy likes")
+        .populate({
+            path: "comments",
+            populate: {
+                path: "user",
+            },
+        });
 
     if (!post) {
         return next(new ErrorHandler("Post Not Found", 404));
@@ -238,10 +239,9 @@ exports.getPostDetails = catchAsync(async (req, res, next) => {
 
 // Get All Posts
 exports.allPosts = catchAsync(async (req, res, next) => {
-
     const posts = await Post.find();
 
     return res.status(200).json({
-        posts
+        posts,
     });
 });
