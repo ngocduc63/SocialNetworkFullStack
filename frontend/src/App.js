@@ -11,6 +11,7 @@ import Profile from "./components/User/Profile";
 import UpdateProfile from "./components/User/Update/UpdateProfile";
 import UpdatePassword from "./components/User/Update/UpdatePassword";
 import SpinLoader from "./components/Layouts/SpinLoader";
+import {AppProvider} from "./context/AppContext";
 
 const Home = lazy(() => import("./components/Home/Home"));
 const SignUp = lazy(() => import("./components/User/SignUp"));
@@ -55,7 +56,7 @@ function App() {
     // });
 
     return (
-        <>
+        <AppProvider>
             {isAuthenticated && <Header/>}
             <Suspense fallback={<SpinLoader/>}>
                 <Routes>
@@ -122,7 +123,7 @@ function App() {
                     <Route path="*" element={<NotFound/>}/>
                 </Routes>
             </Suspense>
-        </>
+        </AppProvider>
     );
 }
 

@@ -1,24 +1,24 @@
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import {addComment, deletePost, likePost, savePost,} from "../../actions/postAction";
-import {BASE_POST_IMAGE_URL, BASE_PROFILE_IMAGE_URL, SOCKET_ENDPOINT,} from "../../utils/constants";
+import {BASE_POST_IMAGE_URL, BASE_PROFILE_IMAGE_URL,} from "../../utils/constants";
 import {likeFill} from "../Navbar/SvgIcons";
 import {
-  commentIcon,
-  emojiIcon,
-  likeIconOutline,
-  moreIcons,
-  saveIconFill,
-  saveIconOutline,
-  shareIcon,
+    commentIcon,
+    emojiIcon,
+    likeIconOutline,
+    moreIcons,
+    saveIconFill,
+    saveIconOutline,
+    shareIcon,
 } from "./SvgIcons";
 import {Picker} from "emoji-mart";
 import ScrollToBottom from "react-scroll-to-bottom";
 import axios from "axios";
 import moment from "moment";
-import {io} from "socket.io-client";
 import {Dialog} from "@mui/material";
+import {AppContext} from "../../context/AppContext";
 
 const PostItem = ({
                       _id,
@@ -41,7 +41,7 @@ const PostItem = ({
     const [allLikes, setAllLikes] = useState(likes);
     const [allComments, setAllComments] = useState(comments);
     const [allSavedBy, setAllSavedBy] = useState(savedBy);
-    const socket = useRef(null);
+    const {socket} = useContext(AppContext);
     const [deleteModal, setDeleteModal] = useState(false);
     const [liked, setLiked] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -52,7 +52,7 @@ const PostItem = ({
     const [likeEffect, setLikeEffect] = useState(false);
 
     useEffect(() => {
-        socket.current = io(SOCKET_ENDPOINT);
+        if (!socket) return;
         socket.current.on("updatePost", (data) => {
             if (data.action === "like") {
                 setAllLikes(data.data.post.likes);
@@ -60,7 +60,7 @@ const PostItem = ({
                 setAllComments(data.data.post.comments);
             }
         });
-    }, []);
+    }, [socket]);
 
     const handleLike = async () => {
         setLiked(!liked);
