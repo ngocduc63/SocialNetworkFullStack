@@ -3,35 +3,64 @@
 @tailwind utilities;
 
 body {
-  background-color: #fafafa;
-  font-family: "Segoe UI", sans-serif;
+    background-color: #fafafa;
+    font-family: "Segoe UI", sans-serif;
 }
 
 .slick-arrow {
-  margin: 0 2.3rem;
-  background-color: #ffffff;
-  z-index: 100;
+    margin: 0 2.3rem;
+    background-color: #ffffff;
+    z-index: 100;
 }
 
 .likeEffect {
-  position: absolute;
-  opacity: 0.7;
-  width: 6rem;
-  transform: scale(0);
-  animation: like 0.5s linear 1;
+    position: absolute;
+    opacity: 0.7;
+    width: 6rem;
+    transform: scale(0);
+    animation: like 0.5s linear 1;
 }
 
 @keyframes like {
-  0% {
-    transform: scale(0.2);
-  }
-  25% {
-    transform: scale(0.6);
-  }
-  50% {
-    transform: scale(1.04);
-  }
-  100% {
-    transform: scale(0.4);
-  }
+    0% {
+        transform: scale(0.2);
+    }
+    25% {
+        transform: scale(0.6);
+    }
+    50% {
+        transform: scale(1.04);
+    }
+    100% {
+        transform: scale(0.4);
+    }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    /* Kích thước thanh cuộn */
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    /* Màu nền thanh cuộn */
+    .scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    /* Màu & bo góc thanh cuộn */
+    .scrollbar::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+    }
+
+    /* Hiệu ứng hover */
+    .scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 }
