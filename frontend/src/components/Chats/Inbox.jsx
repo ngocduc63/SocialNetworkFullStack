@@ -29,6 +29,7 @@ import { USER_DETAILS_RESET } from "../../constants/userConstants";
 import { AppContext } from "../../context/AppContext";
 import { IconAddImage, IconLike } from "./SvgIcon";
 import { CloseOutlined } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,6 @@ const Inbox = () => {
 
   const inputRef = useRef(null);
   const [message, setMessage] = useState("");
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const scrollRef = useRef(null);
   const { socket } = useContext(AppContext);
 
@@ -63,12 +63,17 @@ const Inbox = () => {
   useEffect(() => {
     if (!socket) return;
     socket.current.on("getMessage", (data) => {
-      setArrivalMessage({
-        sender: data.senderId,
-        content: data.content,
-        idReply: data.idReply,
-        createdAt: Date.now(),
-      });
+      if (data?.senderId === userId) {
+        dispatch({
+          type: ALL_MESSAGES_ADD,
+          payload: {
+            sender: data.senderId,
+            content: data.content,
+            idReply: data.idReply,
+            createdAt: Date.now(),
+          },
+        });
+      }
     });
     socket.current.on("typing", (senderId) => {
       setTypingData({ senderId, typing: true });
@@ -85,19 +90,8 @@ const Inbox = () => {
   }, [typingData, userId]);
 
   useEffect(() => {
-    arrivalMessage &&
-      arrivalMessage.sender === userId &&
-      dispatch({
-        type: ALL_MESSAGES_ADD,
-        payload: arrivalMessage,
-      });
-    // console.log(arrivalMessage);
-  }, [arrivalMessage, userId]);
-
-  useEffect(() => {
     socket.current.emit("addUser", loggedInUser._id);
     socket.current.on("getUsers", (users) => {
-      // console.log(users);
       setIsOnline(users.some((u) => u.userId === userId));
     });
   }, [loggedInUser._id, userId]);
@@ -193,6 +187,16 @@ const Inbox = () => {
     }
     setMessReply(mess);
   }, []);
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (message.trim()) {
+        handleSubmit(e, message);
+        setMessage("");
+      }
+    }
+  };
 
   return (
     <>
@@ -342,7 +346,7 @@ const Inbox = () => {
                       <CloseOutlined className="text-gray-600" />
                     </button>
                   </div>
-                  <span className="truncate max-w-xs">{messReply.content}</span>
+                  <span className="truncate">{messReply.content}</span>
                 </div>
               )}
 
@@ -377,15 +381,15 @@ const Inbox = () => {
                     />
                   </div>
                 )}
-                <input
+                <TextArea
                   ref={inputRef}
-                  className="flex-1 outline-none text-sm"
-                  type="text"
-                  placeholder="Message..."
+                  className="flex-1 outline-none text-sm scrollbar"
                   value={message}
-                  onFocus={() => setShowEmojis(false)}
                   onChange={handleTyping}
-                  required
+                  onKeyDown={handleKeyDown}
+                  placeholder="Message..."
+                  autoSize={{ minRows: 1, maxRows: 3 }}
+                  onFocus={() => setShowEmojis(false)}
                 />
                 {isReply || message.trim().length > 0 ? (
                   <button className="text-primary-blue font-medium text-sm">

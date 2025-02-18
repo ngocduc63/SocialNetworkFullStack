@@ -23,13 +23,15 @@ const MessageContainer = ({ children, ownMsg, handleSetReply, message }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {message.idReply && (
+      {message?.idReply && message?.idReply?.content && (
         <div className="bg-gray-100 rounded-lg px-3 py-1 max-w-xs -mb-1 text-sm text-gray-700 cursor-pointer">
           <div className="flex items-center gap-0.5 font-medium text-gray-500">
             <ReplyIcon className="text-gray-400 w-4 h-4" />
             <span>{"Đã trả lời tin nhắn"}</span>
           </div>
-          <div className="text-gray-600">{message.idReply.content}</div>
+          <div className="text-gray-600 whitespace-pre-wrap break-words">
+            {message.idReply.content}
+          </div>
         </div>
       )}
 
@@ -68,7 +70,7 @@ const Message = ({ ownMsg, friend, message, handleSetReply }) => {
         {message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span className="text-sm text-white bg-violet-600 px-4 py-3 rounded-3xl max-w-xs">
+          <span className="text-sm text-white bg-violet-600 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">
             {message.content}
           </span>
         )}
@@ -90,7 +92,7 @@ const Message = ({ ownMsg, friend, message, handleSetReply }) => {
         {message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span className="px-4 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs">
+          <span className="px-4 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs  whitespace-pre-wrap break-words">
             {message.content}
           </span>
         )}
