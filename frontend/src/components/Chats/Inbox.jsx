@@ -230,7 +230,12 @@ const Inbox = () => {
     };
 
     return (
-      <Modal title="User List" open={open} onCancel={onClose} footer={null}>
+      <Modal
+        title="Danh sách thành viên trong đoạn chat"
+        open={open}
+        onCancel={onClose}
+        footer={null}
+      >
         <List
           dataSource={users}
           renderItem={(user) => (
