@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { clearErrors, getAllChats } from '../../actions/chatAction';
-import ChatListItem from './ChatListItem';
 // import SkeletonUserItem from '../Layouts/SkeletonUserItem';
 // import { Skeleton } from '@mui/material';
 import {

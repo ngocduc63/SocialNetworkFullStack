@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { IconAddTask, IconCheck } from './SvgIcon';
 import TaskModal from './TaskModal';
