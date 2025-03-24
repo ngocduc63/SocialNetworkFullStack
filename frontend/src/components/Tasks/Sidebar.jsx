@@ -6,7 +6,15 @@ import { clearErrors, getAllChats } from '../../actions/chatAction';
 import ChatListItem from './ChatListItem';
 // import SkeletonUserItem from '../Layouts/SkeletonUserItem';
 // import { Skeleton } from '@mui/material';
-import { IconMessage, IconTask } from './SvgIcon';
+import {
+	IconAddTask,
+	IconChart,
+	IconMag,
+	IconMessage,
+	IconTask,
+} from './SvgIcon';
+import { Tabs } from 'antd';
+import CustomTabs from './CustomTab';
 
 const Sidebar = ({ openModal, socket }) => {
 	const dispatch = useDispatch();
@@ -72,7 +80,7 @@ const Sidebar = ({ openModal, socket }) => {
 				</div>
 
 				<div className="flex flex-col overflow-y-auto overflow-x-hidden">
-					<span className="px-4 py-2 font-medium">Messages</span>
+					{/* <span className="px-4 py-2 font-medium">Messages</span> */}
 
 					{/* {loading &&
                         Array(10).fill("").map((el, i) => (
@@ -86,9 +94,21 @@ const Sidebar = ({ openModal, socket }) => {
                         ))
                     } */}
 
-					{chats?.map((c) => (
+					{/* {chats?.map((c) => (
 						<ChatListItem {...c} key={c._id} />
-					))}
+					))} */}
+					<div className="flex justify-between px-4 py-2 ">
+						<div className="flex gap-1">
+							<span className="font-semibold text-xl">To-Do</span>
+							<IconAddTask />
+						</div>
+						<div className="flex gap-1">
+							<IconMag />
+							<IconChart />
+						</div>
+					</div>
+					{/* Tabs */}
+					<CustomTabs />
 				</div>
 			</div>
 		</>

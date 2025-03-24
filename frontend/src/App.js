@@ -20,6 +20,7 @@ const ForgotPassword = lazy(() => import("./components/User/ForgotPassword"));
 const ResetPassword = lazy(() => import("./components/User/ResetPassword"));
 const Update = lazy(() => import("./components/User/Update/Update"));
 const Inbox = lazy(() => import("./components/Chats/Inbox"));
+const Task = lazy(() => import("./components/Tasks/Task"));
 const NotFound = lazy(() => import("./components/Errors/NotFound"));
 
 function App() {
@@ -116,6 +117,15 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <Inbox/>
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/direct/task"
+                        element={
+                            <PrivateRoute>
+                                <Task/>
                             </PrivateRoute>
                         }
                     />
