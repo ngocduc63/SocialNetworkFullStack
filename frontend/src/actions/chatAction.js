@@ -29,13 +29,14 @@ export const getAllChats = () => async (dispatch) => {
 };
 
 // New Chat
-export const addNewChat = (userId) => async (dispatch) => {
+export const addNewChat = (users) => async (dispatch) => {
   try {
     dispatch({ type: NEW_CHAT_REQUEST });
     const config = { header: { "Content-Type": "application/json" } };
+    console.log(users);
     const { data } = await axios.post(
       "/api/v1/newChat",
-      { receiverId: userId },
+      { users: users },
       config,
     );
 

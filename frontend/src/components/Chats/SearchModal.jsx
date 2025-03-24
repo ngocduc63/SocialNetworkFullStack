@@ -7,39 +7,74 @@ import { useNavigate } from "react-router-dom";
 import { NEW_CHAT_RESET } from "../../constants/chatConstants";
 import { toast } from "react-toastify";
 import { addNewChat, clearErrors } from "../../actions/chatAction";
-import { Skeleton } from "@mui/material";
+import { Button, Checkbox, Skeleton } from "@mui/material";
+
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 const NewDialog = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const { user: self } = useSelector((state) => state.user);
   const { error, chat } = useSelector((state) => state.newChat);
 
   const fetchUsers = async (term) => {
+    if (!term.trim()) {
+      setUsers([]);
+      return;
+    }
+
     setLoading(true);
-    const { data } = await axios.get(`/api/v1/users?keyword=${term}`);
-    setUsers(data.users.filter((u) => u._id !== self._id));
+    try {
+      const { data } = await axios.get(`/api/v1/users?keyword=${term}`);
+      setUsers(data.users.filter((u) => u._id !== self._id));
+    } catch (err) {
+      console.error("Failed to fetch users:", err);
+    }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (searchTerm.trim().length > 0) {
-      fetchUsers(searchTerm);
+    fetchUsers(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
+
+  const handleUserSelect = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId],
+    );
+  };
+
+  const createChat = () => {
+    if (selectedUsers.length === 1) {
+      dispatch(addNewChat([selectedUsers[0]]));
+    } else {
+      dispatch(addNewChat(selectedUsers));
     }
-
-    return () => {
-      setUsers([]);
-    };
-  }, [searchTerm]);
-
-  const addToChat = (userId) => {
-    dispatch(addNewChat(userId));
     setSearchTerm("");
+    setSelectedUsers([]);
   };
 
   useEffect(() => {
@@ -111,7 +146,7 @@ const NewDialog = ({ open, onClose }) => {
           {loading ? (
             Array(8)
               .fill("")
-              .map((el, i) => (
+              .map((_, i) => (
                 <div className="flex items-center gap-2 py-2 px-4" key={i}>
                   <Skeleton
                     animation="wave"
@@ -128,10 +163,15 @@ const NewDialog = ({ open, onClose }) => {
           ) : users.length > 0 ? (
             users.map((u) => (
               <div
-                onClick={() => addToChat(u._id)}
+                onClick={() => handleUserSelect(u._id)}
                 className="flex items-center hover:bg-gray-50 py-2 px-4 cursor-pointer"
                 key={u._id}
               >
+                <Checkbox
+                  checked={selectedUsers.includes(u._id)}
+                  onChange={() => handleUserSelect(u._id)}
+                  color="primary"
+                />
                 <div className="flex space-x-3 items-center">
                   <img
                     draggable="false"
@@ -154,6 +194,19 @@ const NewDialog = ({ open, onClose }) => {
             </span>
           )}
         </div>
+
+        {selectedUsers.length > 0 && (
+          <div className="border-t p-3 flex justify-end">
+            <Button
+              onClick={createChat}
+              variant="contained"
+              color="primary"
+              disabled={selectedUsers.length === 0}
+            >
+              {selectedUsers.length === 1 ? "Start Chat" : "Create Group"}
+            </Button>
+          </div>
+        )}
       </div>
     </Dialog>
   );
