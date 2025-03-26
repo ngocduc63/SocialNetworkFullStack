@@ -2,14 +2,21 @@ import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
 import { IconAddTask, IconCheck } from './SvgIcon';
 import TaskModal from './TaskModal';
-import TaskListItem from './TaskListItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { setStatus, setType } from '../../actions/filterAction';
+import { taskCountSelector } from './filterSelector';
 
-const Filter = ({ pendingText, doneText, tasksLength }) => {
+const Filter = ({ pendingText, doneText,taskCountPending,taskCountDone }) => {
+	const dispatch = useDispatch();
+	const status = useSelector((state) => state.filter.status);
 	return (
 		<div className="px-4">
-			<Tabs defaultActiveKey="pending">
-				<Tabs.TabPane key="pending" tab="Chưa xong">
-					{tasksLength === 0 ? (
+			<Tabs
+				defaultActiveKey="pending"
+				activeKey={status}
+				onChange={(key) => dispatch(setStatus(key))}>
+				<Tabs.TabPane key="pending" tab={<p>Chưa xong<span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCountPending}</span></p>}>
+					{taskCountPending === 0 ? (
 						<div className="border border-gray-300 rounded-lg p-4 shadow-sm mt-4 text-center text-base">
 							<p>{pendingText}</p>
 						</div>
@@ -17,8 +24,8 @@ const Filter = ({ pendingText, doneText, tasksLength }) => {
 						<div></div>
 					)}
 				</Tabs.TabPane>
-				<Tabs.TabPane key="done" tab="Đã xong">
-					{tasksLength === 0 ? (
+				<Tabs.TabPane key="done" tab={<p>Đã xong<span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCountDone}</span></p>}>
+					{taskCountDone === 0 ? (
 						<div className="border border-gray-300 rounded-lg p-4 shadow-sm mt-4 text-center text-base">
 							<p>{doneText}</p>
 						</div>
@@ -31,41 +38,60 @@ const Filter = ({ pendingText, doneText, tasksLength }) => {
 	);
 };
 
-export default function CustomTabs({isModalOpen,showModal,handleCancel,tasks}) {
-
-	useEffect(() => {
-		// Gọi API lấy danh sách công việc nếu cần
-		
-	}, []);
-
+export default function CustomTabs({
+	isModalOpen,
+	showModal,
+	handleCancel,
+	tasks,
+}) {
+	const dispatch = useDispatch();
+	const taskCount = useSelector(taskCountSelector);
 	return (
 		<div className="">
-			<Tabs className="w-full" type="card">
-				<Tabs.TabPane key="1" tab="TÔI GIAO">
+			<Tabs
+				className="w-full"
+				type="card"
+				defaultActiveKey="pending"
+				onChange={(key) => {
+					dispatch(setType(key));
+					// dispatch(setStatus('pending'))
+				}}>
+				<Tabs.TabPane
+					key="assign"
+					tab={<p className="text-sm px-2 py-1">TÔI GIAO <span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCount.assign.pending}</span></p>}>
 					<Filter
 						pendingText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ chưa hoàn thành."
 						doneText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ đã hoàn thành."
-						tasksLength={tasks.length}
+						taskCountPending={taskCount.assign.pending}
+						taskCountDone={taskCount.assign.done}
 					/>
 				</Tabs.TabPane>
-				<Tabs.TabPane key="2" tab="CẦN LÀM">
+
+				<Tabs.TabPane
+					key="need"
+					tab={<p className="text-sm px-2 py-1">CẦN LÀM <span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCount.need.pending}</span></p>}>
 					<Filter
 						pendingText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn chưa hoàn thành."
 						doneText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn đã hoàn thành."
-						tasksLength={tasks.length}
+						taskCountPending={taskCount.need.pending}
+						taskCountDone={taskCount.need.done}
 					/>
 				</Tabs.TabPane>
-				<Tabs.TabPane key="3" tab="THEO DÕI">
+				{/* <Tabs.TabPane
+					key="3"
+					tab={<p className="text-sm px-2 py-1">THEO DÕI</p>}>
 					<Filter
 						pendingText="Danh sách này sẽ gồm các công việc giao cho thành viên mà họ chưa hoàn thành, bạn trong danh sách theo dõi."
 						doneText="Danh sách này sẽ gồm các công việc giao cho thành viên mà họ đã hoàn thành, bạn trong danh sách theo dõi."
-						tasksLength={tasks.length}
+						taskCountPending={taskCount.follow.pending}
+						taskCountDone={taskCount.follow.done}
 					/>
-				</Tabs.TabPane>
+				</Tabs.TabPane> */}
 			</Tabs>
+
 			{tasks.length === 0 && (
 				<div className="flex flex-col items-center pt-10">
-					<IconCheck width={120} height={120}/>
+					<IconCheck width={120} height={120} />
 					<p>Danh sách công việc đang trống</p>
 					<span
 						className="mt-4 flex gap-1 text-primary-blue hover:cursor-pointer"
@@ -76,7 +102,6 @@ export default function CustomTabs({isModalOpen,showModal,handleCancel,tasks}) {
 				</div>
 			)}
 			<TaskModal open={isModalOpen} onClose={handleCancel} />
-			
 		</div>
 	);
 }

@@ -17,3 +17,6 @@ export const TASK_LIST_FAIL = 'TASK_LIST_FAIL';
 export const TASK_FILTER_REQUEST = 'TASK_FILTER_REQUEST';
 export const TASK_FILTER_SUCCESS = 'TASK_FILTER_SUCCESS';
 export const TASK_FILTER_FAIL = 'TASK_FILTER_FAIL';
+
+export const SET_STATUS = 'SET_STATUS';
+export const SET_TYPE = 'SET_TYPE';

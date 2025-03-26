@@ -50,23 +50,23 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 	return (
 		<>
 			<Modal
-				title={<span className="text-xl font-bold">Chi tiết công việc</span>}
+				title={<span className="text-lg font-bold">Chi tiết công việc</span>}
 				open={isModalOpen}
 				onCancel={handleCancel}
 				footer={null}
-				width={700}>
+				width={640}>
 				<div className="border-t pt-3 flex">
 					{/* Trái */}
 					<div className="flex flex-col border-r pr-3" style={{ flex: '7' }}>
 						<div className="flex-1 min-h-[450px]">
 							<div className="flex flex-col space-y-2 pb-3 border-b">
-								<h2 className="text-lg font-medium">{title}</h2>
+								<h2 className="text-base font-medium">{title}</h2>
 								<p className="text-base">{content}</p>
 							</div>
 							<div className="pt-3 flex flex-col space-y-4">
 								<div className="flex space-x-2 items-center">
 									<IconList />
-									<p className="text-lg font-semibold">Hoạt động</p>
+									<p className="text-base font-semibold">Hoạt động</p>
 								</div>
 								<div className="flex space-x-2 items-center">
 									<img
@@ -77,7 +77,7 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 										height={32}
 										className="rounded-full"
 									/>
-									<p className="text-lg font-medium">
+									<p className="text-base font-medium">
 										{assigner.name} đã giao việc cho bạn
 									</p>
 								</div>
@@ -107,8 +107,8 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 							<p>Ngày hết hạn</p>
 							<p>{time}</p>
 						</div>
-						<div className="flex flex-col text-base font-medium space-y-1">
-							<p>Giao cho</p>
+						<div className="flex flex-col space-y-1">
+							<p className='text-base font-medium'>Giao cho</p>
 							{users?.map((user) => (
 								<div className="flex space-x-2 items-center">
 									<img
@@ -119,7 +119,7 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 										height={32}
 										className="rounded-full"
 									/>
-									<p>{user.name}</p>
+									<p className='text-sm font-medium '>{user.name}</p>
 								</div>
 							))}
 						</div>

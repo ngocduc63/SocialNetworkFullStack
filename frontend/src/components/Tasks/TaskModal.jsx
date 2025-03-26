@@ -111,7 +111,7 @@ export default function TaskModal({ open, onClose, task }) {
 
 	return (
 		<Modal
-			title={<span className="text-lg font-bold">Giao công việc mới</span>}
+			title={<span className="text-base font-bold">Giao công việc mới</span>}
 			open={open}
 			onCancel={onClose}
 			footer={null}

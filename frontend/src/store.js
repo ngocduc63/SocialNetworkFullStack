@@ -24,6 +24,7 @@ import {
   newMessageReducer,
 } from "./reducers/messageReducer";
 import tasksReducer from "./reducers/tasksReducer";
+import filterTaskReducer from "./reducers/filterTaskReducer";
 
 const reducer = combineReducers({
   user: userReducer,
@@ -43,7 +44,8 @@ const reducer = combineReducers({
   allMessages: allMessagesReducer,
   newMessage: newMessageReducer,
   newChat: newChatReducer,
-  tasks: tasksReducer
+  tasks: tasksReducer,
+  filter: filterTaskReducer
 });
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));

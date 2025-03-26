@@ -3,11 +3,13 @@ import CustomTabs from './CustomTabs';
 import { IconAddTask, IconChart, IconMag } from './SvgIcon';
 import TaskModal from './TaskModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTasks } from '../../actions/taskAction';
 import TaskListItem from './TaskListItem';
+import { filteredTasksSelector } from './filterSelector';
+import { getTasks } from '../../actions/taskAction';
 
 const Tasks = () => {
 	const { tasks } = useSelector((state) => state.tasks);
+	const filterTasks = useSelector(filteredTasksSelector)
 	const dispatch = useDispatch();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const showModal = () => {
@@ -18,9 +20,8 @@ const Tasks = () => {
 	};
 	useEffect(() => {
 		// Fake tạm thời
-		dispatch(getTasks());
-		console.log(tasks);
-	}, [tasks]);
+		// dispatch(getTasks());
+	}, [filterTasks]);
 	return (
 		<>
 			<div className="flex justify-between px-4 py-2 ">
@@ -44,7 +45,7 @@ const Tasks = () => {
 				tasks={tasks}
 			/>
 			<div className='px-4 space-y-4'>
-				{tasks?.map((t) => (
+				{filterTasks?.map((t) => (
 					<TaskListItem task={t} key={t.id} />
 				))}
 			</div>

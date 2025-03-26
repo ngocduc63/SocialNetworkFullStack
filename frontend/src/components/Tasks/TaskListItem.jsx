@@ -8,7 +8,7 @@ import { updateTaskStatus } from '../../actions/taskAction';
 
 export default function TaskListItem({ task }) {
 	const { title, content, users, time, assigner, done } = task;
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const [isTaskDetailOpen, setTaskDetailOpen] = useState(false);
 	const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false);
 
@@ -41,17 +41,14 @@ export default function TaskListItem({ task }) {
 				onClick={handleTaskDetailOpen}>
 				{/* Avatar + Checkbox */}
 				<div className="flex items-center">
-					
 					<div className="flex -space-x-2 group-hover:hidden">
 						<div className="relative w-8 h-8">
-							
 							<img
 								src={users[0]?.avatar}
 								alt={`${users[0]?.name}'s avatar`}
 								className="w-8 h-8 rounded-full"
 							/>
 
-							
 							{users.length > 1 && (
 								<div className="absolute bottom-0 right-0 bg-blue-500 text-white text-xs font-semibold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
 									+{users.length - 1}
@@ -80,11 +77,14 @@ export default function TaskListItem({ task }) {
 						</span>
 					</span>
 					<p className="text-sm text-gray-600">{content}</p>
-					{done === false ? (
-						<p className="text-sm text-gray-600">Chưa xong</p>
-					) : (
-						<p className="text-sm text-green-500">Đã xong</p>
-					)}
+					<div className="flex justify-between items-center">
+						{done === false ? (
+							<p className="text-sm text-gray-600">Chưa xong</p>
+						) : (
+							<p className="text-sm text-green-500">Đã xong</p>
+						)}
+						<p className='text-sm text-gray-600'>Thời hạn: {time}</p>
+					</div>
 				</div>
 				<div className="cursor-pointer">
 					<IconDots />
