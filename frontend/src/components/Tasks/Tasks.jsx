@@ -45,7 +45,7 @@ const Tasks = () => {
 			/>
 			<div className='px-4 space-y-4'>
 				{tasks?.map((t) => (
-					<TaskListItem {...t} key={t.id} />
+					<TaskListItem task={t} key={t.id} />
 				))}
 			</div>
 		</>

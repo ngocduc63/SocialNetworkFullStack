@@ -1,27 +1,31 @@
 import { Modal } from 'antd';
 import React from 'react';
 
-export default function Confirm({ isModalOpen, handleCancel }) {
+export default function Confirm({ isModalOpen, handleCancel, confirmType, onConfirm }) {
+	const confirmMessage =
+		confirmType === 'delete'
+			? 'Công việc này sẽ không còn hiển thị trên danh sách của bạn. Bạn có chắc rằng bạn muốn xoá công việc này không?'
+			: 'HOÀN THÀNH công việc sẽ chuyển công việc sang danh sách Hoàn thành.';
+	const confirmTitle =
+		confirmType === 'delete' ? 'Xóa công việc' : 'Kết thúc công việc';
+
 	return (
 		<Modal
-			title="Kết thúc công việc"
+			title={<span className="text-lg font-bold">{confirmTitle}</span>}
 			open={isModalOpen}
 			onCancel={handleCancel}
 			footer={null}>
-			<div>
-				<p className='text-lg'>
-					HOÀN THÀNH công việc sẽ chuyển công việc sang danh sách Hoàn thành.
-				</p>
-				<div className="flex mt-5 gap-2 font-semibold">
-					<div
-						className="text-lg py-2 px-4 border rounded-md hover:text-[#1777FF] cursor-pointer"
-						onClick={handleCancel}>
-						Không
-					</div>
-					<div
-						className={`text-lg py-2 px-3 border rounded-md bg-[#1777FF] text-white hover:opacity-75 cursor-pointer`}>
-						Có
-					</div>
+			<div className='border-t pt-4'>
+				<p className="text-base font-medium">{confirmMessage}</p>
+				<div className="flex justify-end mt-4 space-x-2 text-base">
+					<button
+						onClick={handleCancel}
+						className="border px-4 py-2 rounded-md">
+						Hủy
+					</button>
+					<button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={onConfirm}>
+						{confirmType === 'delete' ? 'Xóa công việc' : 'Kết thúc'}
+					</button>
 				</div>
 			</div>
 		</Modal>

@@ -36,15 +36,15 @@ export const IconChart = () => {
 	);
 };
 
-export const IconCheck = () => {
+export const IconCheck = ({ width, height }) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={120}
-			height={120}
+			width={width}
+			height={height}
+			className='fill-green-400'
 			viewBox="0 0 24 24">
 			<path
-				fill="#000"
 				d="m10 17l-5-5l1.41-1.42L10 14.17l7.59-7.59L19 8m0-5H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2"
 				strokeWidth={0.5}
 				stroke="#000"></path>
@@ -96,6 +96,70 @@ export const IconDots = () => {
 			viewBox="0 0 24 24">
 			<path
 				d="M16 12a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2m-6 0a2 2 0 0 1 2-2a2 2 0 0 1 2 2a2 2 0 0 1-2 2a2 2 0 0 1-2-2"
+				strokeWidth={0.5}
+				stroke="#000"></path>
+		</svg>
+	);
+};
+
+export const IconList = () => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={24}
+			height={24}
+			viewBox="0 0 24 24">
+			<path
+				fill="#000"
+				d="M7 5h14v2H7zm0 8v-2h14v2zM4 4.5A1.5 1.5 0 0 1 5.5 6A1.5 1.5 0 0 1 4 7.5A1.5 1.5 0 0 1 2.5 6A1.5 1.5 0 0 1 4 4.5m0 6A1.5 1.5 0 0 1 5.5 12A1.5 1.5 0 0 1 4 13.5A1.5 1.5 0 0 1 2.5 12A1.5 1.5 0 0 1 4 10.5M7 19v-2h14v2zm-3-2.5A1.5 1.5 0 0 1 5.5 18A1.5 1.5 0 0 1 4 19.5A1.5 1.5 0 0 1 2.5 18A1.5 1.5 0 0 1 4 16.5"
+				strokeWidth={0.5}
+				stroke="#000"></path>
+		</svg>
+	);
+};
+
+export const IconDot = ({ className }) => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={32}
+			height={32}
+			className={`${className}`}
+			viewBox="0 0 24 24">
+			<path
+				d="M12 10a2 2 0 0 0-2 2a2 2 0 0 0 2 2c1.11 0 2-.89 2-2a2 2 0 0 0-2-2"
+				strokeWidth={0.5}
+				stroke="#000"></path>
+		</svg>
+	);
+};
+
+export const IconPen = () => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={24}
+			height={24}
+			className="fill-yellow-400"
+			viewBox="0 0 24 24">
+			<path
+				d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83l3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"
+				strokeWidth={0.5}
+				stroke="#000"></path>
+		</svg>
+	);
+};
+
+export const IconBin = () => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width={24}
+			height={24}
+			className="fill-red-500"
+			viewBox="0 0 24 24">
+			<path
+				d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6zM8 9h8v10H8zm7.5-5l-1-1h-5l-1 1H5v2h14V4z"
 				strokeWidth={0.5}
 				stroke="#000"></path>
 		</svg>

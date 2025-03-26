@@ -20,13 +20,13 @@ const initialState = {
 	tasks: [
 		{
 			id: '1742891012283',
-			title: '',
+			title: 'Không có tiêu đề',
 			content: '123',
 			users: [
 				{
 					id: '67e01c4a37de6a518bb24f6e',
 					name: "Tran Viet Bach",
-					avatar: 'avatar_1742740554656-152327835.png'
+					avatar: 'https://png.pngtree.com/element_our/20200610/ourmid/pngtree-character-default-avatar-image_2237203.jpg'
 				}
 			],
 			time: 'Không thời hạn',

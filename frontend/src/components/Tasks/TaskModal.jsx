@@ -5,7 +5,7 @@ import en from 'antd/es/date-picker/locale/en_US';
 import dayjs from 'dayjs';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import { useDispatch, useSelector } from 'react-redux';
-import { addTask } from '../../actions/taskAction';
+import { addTask, updateTask } from '../../actions/taskAction';
 import { toast } from 'react-toastify';
 
 dayjs.extend(buddhistEra);
@@ -31,14 +31,14 @@ const options = [
 	},
 ];
 
-export default function TaskModal({ open, onClose }) {
+export default function TaskModal({ open, onClose, task }) {
 	const ref = useRef();
 	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.user);
 	const [formData, setFormData] = useState({
 		title: '',
 		content: '',
-		user: [],
+		users: [],
 		time: '',
 	});
 
@@ -56,46 +56,62 @@ export default function TaskModal({ open, onClose }) {
 		if (selectedUsers.length === 0 && currentUser) {
 			selectedUsers = [currentUser];
 		}
-		setFormData((prev) => ({ ...prev, user: selectedUsers }));
+		setFormData((prev) => ({ ...prev, users: selectedUsers }));
 	};
-	
 
 	const handleDateChange = (date) => {
 		if (date) {
-			const formattedDate = date.format('YYYY-MM-DD HH:mm');
+			const formattedDate = date.format(' HH:mm DD-MM-YYYY');
 			setFormData((prev) => ({ ...prev, time: formattedDate }));
 		}
 	};
 
-	const handleAddTask = () => {
+	const handleSaveTask = () => {
 		if (!formData.content.trim()) return;
-		if(formData.user.length === 0) formData.user = [currentUser]
-		const newTask = {
-			id: Date.now(),
-			title: formData.title.trim(),
-			content: formData.content.trim(),
-			users: formData.user,
-			time: formData.time || 'Không thời hạn',
-			assigner: currentUser,
-			done: false
-		};
+		if (formData.users.length === 0) formData.users = [currentUser];
 
-		dispatch(addTask(newTask));
-		toast.success('Giao việc thành công')
-		setFormData({ title: '', content: '', user: [], time: '' });
+		if (task) {
+			const updatedTask = {
+				...task,
+				...formData,
+			};
+			dispatch(updateTask(task.id, updatedTask));
+			toast.success('Chỉnh sửa công việc thành công');
+		} else {
+			const newTask = {
+				id: Date.now(),
+				title: formData.title.trim(),
+				content: formData.content.trim(),
+				users: formData.users,
+				time: formData.time || 'Không thời hạn',
+				assigner: currentUser,
+				done: false,
+			};
+			dispatch(addTask(newTask));
+			toast.success('Giao việc thành công');
+		}
+
+		setFormData({ title: '', content: '', users: [], time: '' });
 		onClose();
 	};
 
-	const isDisabled = !formData.content.trim();
+	const isDisabled = !formData.content.trim() || (task && formData.title === task.title);
 	useEffect(() => {
-		
-	}, []);
-	
-	
-	
+		if (task) {
+			setFormData({
+				title: task.title,
+				content: task.content,
+				users: task.users,
+				time: task.time,
+			});
+		} else {
+			setFormData({ title: '', content: '', users: [], time: '' });
+		}
+	}, [task]);
+
 	return (
 		<Modal
-			title="Giao công việc mới"
+			title={<span className="text-lg font-bold">Giao công việc mới</span>}
 			open={open}
 			onCancel={onClose}
 			footer={null}
@@ -126,6 +142,7 @@ export default function TaskModal({ open, onClose }) {
 						className="text-base"
 						value={formData.content}
 						onChange={handleChange}
+						disabled={!!task}
 					/>
 				</div>
 
@@ -137,7 +154,7 @@ export default function TaskModal({ open, onClose }) {
 						style={{ width: '100%' }}
 						className="py-1"
 						placeholder="Bản thân"
-						value={formData.user.map((user) => user.id)}
+						value={formData.users.map((user) => user.id)}
 						onChange={handleSelectChange}
 						filterOption={true}
 						options={options.map((user) => ({
@@ -157,7 +174,7 @@ export default function TaskModal({ open, onClose }) {
 						}))}
 						tagRender={(props) => {
 							const { value, closable, onClose } = props;
-							const selectedUsers = formData.user; // Danh sách người đã chọn
+							const selectedUsers = formData.users;
 							const selectedUser = options.find((user) => user.id === value);
 							const isSingle = selectedUsers.length === 1;
 
@@ -193,13 +210,15 @@ export default function TaskModal({ open, onClose }) {
 					<p className="text-base font-semibold mb-1">Thời hạn</p>
 					<DatePicker
 						value={
-							formData.time ? dayjs(formData.time, 'YYYY-MM-DD HH:mm') : null
+							formData.time ? dayjs(formData.time, 'HH:mm DD/MM/YYYY') : null
 						}
 						placeholder="Không thời hạn"
 						showTime={{ format: 'HH:mm' }}
-						format="YYYY-MM-DD HH:mm"
+						format="HH:mm DD/MM/YYYY"
 						locale={en}
-						disabledDate={(current) => current && current < dayjs().startOf('day')}
+						disabledDate={(current) =>
+							current && current < dayjs().startOf('day')
+						}
 						onChange={handleDateChange}
 						className="w-full text-base"
 					/>
@@ -212,13 +231,10 @@ export default function TaskModal({ open, onClose }) {
 					Hủy
 				</div>
 				<div
-					onClick={!isDisabled ? handleAddTask : undefined}
-					className={`text-lg py-2 px-3 border rounded-md ${
-						isDisabled
-							? 'bg-gray-400 cursor-not-allowed text-white'
-							: 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'
-					}`}>
-					Giao việc
+					onClick={!isDisabled ? handleSaveTask : undefined}
+					className={`text-lg py-2 px-3 border rounded-md ${isDisabled ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'}`}
+				>
+					{task ? 'Chỉnh sửa' : 'Giao việc'}
 				</div>
 			</div>
 		</Modal>
