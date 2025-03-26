@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { NEW_CHAT_RESET } from "../../constants/chatConstants";
 import { toast } from "react-toastify";
-import { addNewChat, clearErrors } from "../../actions/chatAction";
+import { addMembers, addNewChat, clearErrors } from "../../actions/chatAction";
 import { Button, Checkbox, Skeleton } from "@mui/material";
 
 const useDebounce = (value, delay) => {
@@ -25,7 +25,13 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const NewDialog = ({ open, onClose }) => {
+const NewDialog = ({
+  open,
+  onClose,
+  isAddMember = false,
+  chatId = null,
+  userIds = [],
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,7 +54,11 @@ const NewDialog = ({ open, onClose }) => {
     setLoading(true);
     try {
       const { data } = await axios.get(`/api/v1/users?keyword=${term}`);
-      setUsers(data.users.filter((u) => u._id !== self._id));
+      if (isAddMember) {
+        setUsers(data.users.filter((u) => !userIds.includes(u._id)));
+      } else {
+        setUsers(data.users.filter((u) => u._id !== self._id));
+      }
     } catch (err) {
       console.error("Failed to fetch users:", err);
     }
@@ -68,16 +78,21 @@ const NewDialog = ({ open, onClose }) => {
   };
 
   const createChat = () => {
-    if (selectedUsers.length === 1) {
-      dispatch(addNewChat([selectedUsers[0]]));
+    if (isAddMember) {
+      dispatch(addMembers(chatId, selectedUsers));
     } else {
-      dispatch(addNewChat(selectedUsers));
+      if (selectedUsers.length === 1) {
+        dispatch(addNewChat([selectedUsers[0]]));
+      } else {
+        dispatch(addNewChat(selectedUsers));
+      }
     }
     setSearchTerm("");
     setSelectedUsers([]);
   };
 
   useEffect(() => {
+    if (isAddMember) return;
     if (error) {
       toast.error(error);
       dispatch(clearErrors());
@@ -88,7 +103,7 @@ const NewDialog = ({ open, onClose }) => {
       dispatch({ type: NEW_CHAT_RESET });
       onClose();
     }
-  }, [dispatch, error, chat, navigate]);
+  }, [dispatch, error, chat, navigate, isAddMember]);
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -203,7 +218,11 @@ const NewDialog = ({ open, onClose }) => {
               color="primary"
               disabled={selectedUsers.length === 0}
             >
-              {selectedUsers.length === 1 ? "Start Chat" : "Create Group"}
+              {isAddMember
+                ? "Thêm"
+                : selectedUsers.length === 1
+                  ? "Tạo chat"
+                  : "Tạo nhóm"}
             </Button>
           </div>
         )}

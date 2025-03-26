@@ -8,6 +8,11 @@ import {
   NEW_CHAT_REQUEST,
   NEW_CHAT_SUCCESS,
 } from "../constants/chatConstants";
+import {
+  addUsersToChat,
+  deleteUsersFromChat,
+  updateChatName,
+} from "../reducers/chatsReducer";
 
 // Get All Chats
 export const getAllChats = () => async (dispatch) => {
@@ -33,7 +38,6 @@ export const addNewChat = (users) => async (dispatch) => {
   try {
     dispatch({ type: NEW_CHAT_REQUEST });
     const config = { header: { "Content-Type": "application/json" } };
-    console.log(users);
     const { data } = await axios.post(
       "/api/v1/newChat",
       { users: users },
@@ -49,6 +53,60 @@ export const addNewChat = (users) => async (dispatch) => {
       type: NEW_CHAT_FAIL,
       payload: error.response.data.message,
     });
+  }
+};
+
+export const renameGroup = (chatId, newName) => async (dispatch) => {
+  try {
+    const config = { header: { "Content-Type": "application/json" } };
+    const { data } = await axios.post(
+      "/api/v1/renameGroup",
+      { chatId, newName },
+      config,
+    );
+
+    dispatch(updateChatName(chatId, newName));
+  } catch (error) {
+    // dispatch({
+    //   type: NEW_CHAT_FAIL,
+    //   payload: error.response.data.message,
+    // });
+  }
+};
+
+export const removeMembers = (chatId, userIds) => async (dispatch) => {
+  try {
+    const config = { header: { "Content-Type": "application/json" } };
+    const { data } = await axios.post(
+      "/api/v1/removeMembers",
+      { chatId, userIds },
+      config,
+    );
+
+    dispatch(deleteUsersFromChat(chatId, userIds));
+  } catch (error) {
+    // dispatch({
+    //   type: NEW_CHAT_FAIL,
+    //   payload: error.response.data.message,
+    // });
+  }
+};
+
+export const addMembers = (chatId, userIds) => async (dispatch) => {
+  try {
+    const config = { header: { "Content-Type": "application/json" } };
+    const { data } = await axios.post(
+      "/api/v1/addMembers",
+      { chatId, userIds },
+      config,
+    );
+
+    dispatch(addUsersToChat(chatId, userIds));
+  } catch (error) {
+    // dispatch({
+    //   type: NEW_CHAT_FAIL,
+    //   payload: error.response.data.message,
+    // });
   }
 };
 

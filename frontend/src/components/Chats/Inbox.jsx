@@ -33,8 +33,7 @@ import { AppContext } from "../../context/AppContext";
 import { IconAddImage, IconDetailChat, IconLike } from "./SvgIcon";
 import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import { List, Modal } from "antd";
-import { Avatar, Checkbox } from "@mui/material";
+import ChatDetailModal from "./ChatDetailModal";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -218,52 +217,11 @@ const Inbox = () => {
     setIsShowDetailChat(false);
   };
 
-  const UserListModal = ({ open, onClose, users }) => {
-    const [selectedUsers, setSelectedUsers] = useState([]);
-
-    const handleSelect = (userId) => {
-      setSelectedUsers((prev) =>
-        prev.includes(userId)
-          ? prev.filter((id) => id !== userId)
-          : [...prev, userId],
-      );
-    };
-
-    return (
-      <Modal
-        title="Danh sách thành viên trong đoạn chat"
-        open={open}
-        onCancel={onClose}
-        footer={null}
-      >
-        <List
-          dataSource={users}
-          renderItem={(user) => (
-            <List.Item>
-              <Checkbox
-                checked={selectedUsers.includes(user._id)}
-                onChange={() => handleSelect(user._id)}
-              />
-              <List.Item.Meta
-                avatar={
-                  <Avatar
-                    src={BASE_PROFILE_IMAGE_URL + user.avatar}
-                    size={50}
-                  />
-                }
-                title={user.name}
-              />
-            </List.Item>
-          )}
-        />
-      </Modal>
-    );
-  };
-
   return (
     <>
       {isShowDetailChat && (
-        <UserListModal
+        <ChatDetailModal
+          chat={chat}
           open={showDetailChat}
           onClose={hiddenDetailChat}
           users={listUser}
