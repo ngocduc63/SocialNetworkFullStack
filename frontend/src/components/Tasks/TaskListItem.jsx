@@ -37,7 +37,7 @@ export default function TaskListItem({ task }) {
 	return (
 		<>
 			<div
-				className="p-3 border rounded-lg shadow-sm flex items-center gap-3 group hover:cursor-pointer hover:bg-slate-50"
+				className="px-2 py-3 border rounded-lg shadow-sm flex items-center gap-3 group hover:cursor-pointer hover:bg-slate-50 hover:shadow-lg"
 				onClick={handleTaskDetailOpen}>
 				{/* Avatar + Checkbox */}
 				<div className="flex items-center">
@@ -67,23 +67,23 @@ export default function TaskListItem({ task }) {
 				</div>
 
 				{/* Nội dung công việc */}
-				<div className="flex-1">
+				<div className="flex-1 space-y-1">
 					<span className="flex">
-						<p className="font-semibold text-sm">
+						<p className="font-semibold 2xl:text-sm text-xs">
 							{title === '' ? '(Không có tiêu đề)' : title}
 						</p>
 						<span className="hidden group-hover:block">
 							<IconEditTitle />
 						</span>
 					</span>
-					<p className="text-sm text-gray-600">{content}</p>
-					<div className="flex justify-between items-center">
+					<p className="2xl:text-sm text-xs text-gray-600">{content}</p>
+					<div className="2xl:flex justify-between items-center text-xs 2xl:text-sm">
 						{done === false ? (
-							<p className="text-sm text-gray-600">Chưa xong</p>
+							<p className=" text-gray-600">Chưa xong</p>
 						) : (
-							<p className="text-sm text-green-500">Đã xong</p>
+							<p className=" text-green-500">Đã xong</p>
 						)}
-						<p className='text-sm text-gray-600'>Thời hạn: {time}</p>
+						<p className='text-gray-600'>Thời hạn: {time}</p>
 					</div>
 				</div>
 				<div className="cursor-pointer">

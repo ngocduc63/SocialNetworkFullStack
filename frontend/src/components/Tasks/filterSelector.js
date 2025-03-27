@@ -8,7 +8,6 @@ export const filteredTasksSelector = createSelector(
 	[taskSelector, filterSelector, userSelector],
 	(tasks, filter, user) => {
 		let filteredTasks = tasks;
-		console.log(filter);
 		if (filter.type === 'assign') {
 			filteredTasks = filteredTasks.filter(
 				(task) => task.assigner.id === user._id

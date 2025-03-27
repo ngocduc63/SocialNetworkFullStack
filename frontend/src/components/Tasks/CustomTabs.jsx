@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import { IconAddTask, IconCheck } from './SvgIcon';
 import TaskModal from './TaskModal';
@@ -6,16 +6,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setStatus, setType } from '../../actions/filterAction';
 import { taskCountSelector } from './filterSelector';
 
-const Filter = ({ pendingText, doneText,taskCountPending,taskCountDone }) => {
+const Filter = ({ pendingText, doneText, taskCountPending, taskCountDone }) => {
 	const dispatch = useDispatch();
 	const status = useSelector((state) => state.filter.status);
 	return (
-		<div className="px-4">
+		<div className="">
 			<Tabs
+				size="small"
 				defaultActiveKey="pending"
 				activeKey={status}
+				tabBarGutter={10}
 				onChange={(key) => dispatch(setStatus(key))}>
-				<Tabs.TabPane key="pending" tab={<p>Chưa xong<span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCountPending}</span></p>}>
+				<Tabs.TabPane
+					key="pending"
+					tab={
+						<p className='text-sm'>
+							Chưa xong
+							<span className="ml-1 bg-blue-400 rounded-full px-1 text-white">
+								{taskCountPending}
+							</span>
+						</p>
+					}>
 					{taskCountPending === 0 ? (
 						<div className="border border-gray-300 rounded-lg p-4 shadow-sm mt-4 text-center text-base">
 							<p>{pendingText}</p>
@@ -24,7 +35,16 @@ const Filter = ({ pendingText, doneText,taskCountPending,taskCountDone }) => {
 						<div></div>
 					)}
 				</Tabs.TabPane>
-				<Tabs.TabPane key="done" tab={<p>Đã xong<span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCountDone}</span></p>}>
+				<Tabs.TabPane
+					key="done"
+					tab={
+						<p className='text-sm'>
+							Đã xong
+							<span className="ml-1 bg-blue-400 rounded-full px-1 text-white">
+								{taskCountDone}
+							</span>
+						</p>
+					}>
 					{taskCountDone === 0 ? (
 						<div className="border border-gray-300 rounded-lg p-4 shadow-sm mt-4 text-center text-base">
 							<p>{doneText}</p>
@@ -46,19 +66,43 @@ export default function CustomTabs({
 }) {
 	const dispatch = useDispatch();
 	const taskCount = useSelector(taskCountSelector);
+	const [tabType, setTabType] = useState(window.innerWidth >= 1536 ? 'card' : 'line');
+
+	useEffect(() => {
+		const handleResize = () => {
+			setTabType(window.innerWidth >= 1536 ? 'card' : 'line');
+		};
+
+		window.addEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
 	return (
 		<div className="">
 			<Tabs
-				className="w-full"
-				type="card"
+				size='small'
+				type={tabType}
 				defaultActiveKey="pending"
+				tabBarStyle={{
+					display: 'flex',
+					justifyContent: 'center', 
+					padding: 0
+				}}
+				tabBarGutter={5}
 				onChange={(key) => {
 					dispatch(setType(key));
-					// dispatch(setStatus('pending'))
 				}}>
 				<Tabs.TabPane
 					key="assign"
-					tab={<p className="text-sm px-2 py-1">TÔI GIAO <span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCount.assign.pending}</span></p>}>
+					tab={
+						<p className="text-xs 2xl:text-sm px-2 py-1">
+							TÔI GIAO{' '}
+							<span className="ml-1 bg-blue-400 rounded-full px-1 text-white">
+								{taskCount.assign.pending}
+							</span>
+						</p>
+					}>
 					<Filter
 						pendingText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ chưa hoàn thành."
 						doneText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ đã hoàn thành."
@@ -69,7 +113,14 @@ export default function CustomTabs({
 
 				<Tabs.TabPane
 					key="need"
-					tab={<p className="text-sm px-2 py-1">CẦN LÀM <span className='ml-1 bg-blue-400 rounded-full px-1 text-white'>{taskCount.need.pending}</span></p>}>
+					tab={
+						<p className="text-xs 2xl:text-sm px-2 py-1">
+							CẦN LÀM{' '}
+							<span className="ml-1 bg-blue-400 rounded-full px-1 text-white">
+								{taskCount.need.pending}
+							</span>
+						</p>
+					}>
 					<Filter
 						pendingText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn chưa hoàn thành."
 						doneText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn đã hoàn thành."
