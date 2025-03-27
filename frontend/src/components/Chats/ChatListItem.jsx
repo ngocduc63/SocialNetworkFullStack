@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import {
-  BASE_POST_IMAGE_URL,
-  BASE_PROFILE_IMAGE_URL,
-} from "../../utils/constants";
+import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
 import { AppContext } from "../../context/AppContext";
 
-const ChatListItem = ({ _id, users, latestMessage, name = "" }) => {
+const ChatListItem = ({
+  _id,
+  users,
+  latestMessage,
+  avatar = null,
+  name = "",
+}) => {
   const dispatch = useDispatch();
   const params = useParams();
   const [friend, setFriend] = useState({});
@@ -40,7 +43,7 @@ const ChatListItem = ({ _id, users, latestMessage, name = "" }) => {
           <img
             draggable="false"
             className="w-full h-full rounded-full object-cover"
-            src={BASE_POST_IMAGE_URL + "hero.png"}
+            src={BASE_PROFILE_IMAGE_URL + avatar ?? "hero.png"}
             alt="avatar"
           />
         ) : (

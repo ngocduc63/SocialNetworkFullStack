@@ -11,8 +11,10 @@ import {
 import {
   addUsersToChat,
   deleteUsersFromChat,
+  updateAvatarChat,
   updateChatName,
 } from "../reducers/chatsReducer";
+import { toast } from "react-toastify";
 
 // Get All Chats
 export const getAllChats = () => async (dispatch) => {
@@ -59,14 +61,40 @@ export const addNewChat = (users) => async (dispatch) => {
 export const renameGroup = (chatId, newName) => async (dispatch) => {
   try {
     const config = { header: { "Content-Type": "application/json" } };
-    const { data } = await axios.post(
+    const { data } = await axios.put(
       "/api/v1/renameGroup",
       { chatId, newName },
       config,
     );
 
     dispatch(updateChatName(chatId, newName));
+    toast.success("Đổi tên nhóm thành công");
   } catch (error) {
+    // dispatch({
+    //   type: NEW_CHAT_FAIL,
+    //   payload: error.response.data.message,
+    // });
+  }
+};
+
+export const updateAvatarGroup = (formData) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    const { data } = await axios.put(
+      "/api/v1/updateAvatarGroup",
+      formData,
+      config,
+    );
+
+    dispatch(updateAvatarChat(data.chat._id, data.chat.avatar));
+    toast.success("Đổi ảnh nhóm thành công");
+  } catch (error) {
+    console.log(error);
     // dispatch({
     //   type: NEW_CHAT_FAIL,
     //   payload: error.response.data.message,
@@ -77,13 +105,14 @@ export const renameGroup = (chatId, newName) => async (dispatch) => {
 export const removeMembers = (chatId, userIds) => async (dispatch) => {
   try {
     const config = { header: { "Content-Type": "application/json" } };
-    const { data } = await axios.post(
+    const { data } = await axios.put(
       "/api/v1/removeMembers",
       { chatId, userIds },
       config,
     );
 
     dispatch(deleteUsersFromChat(chatId, userIds));
+    toast.success(`Đã xóa ${userIds.length} thành viên thành công`);
   } catch (error) {
     // dispatch({
     //   type: NEW_CHAT_FAIL,
@@ -95,13 +124,14 @@ export const removeMembers = (chatId, userIds) => async (dispatch) => {
 export const addMembers = (chatId, userIds) => async (dispatch) => {
   try {
     const config = { header: { "Content-Type": "application/json" } };
-    const { data } = await axios.post(
+    const { data } = await axios.put(
       "/api/v1/addMembers",
       { chatId, userIds },
       config,
     );
 
     dispatch(addUsersToChat(chatId, data.chat.users));
+    toast.success(`Thêm ${userIds.length} thành viên thành công`);
   } catch (error) {
     // dispatch({
     //   type: NEW_CHAT_FAIL,

@@ -9,6 +9,7 @@ import {
   NEW_CHAT_REQUEST,
   NEW_CHAT_RESET,
   NEW_CHAT_SUCCESS,
+  UPDATE_AVATAR_CHAT,
   UPDATE_NAME_CHAT,
 } from "../constants/chatConstants";
 
@@ -37,6 +38,16 @@ export const allChatsReducer = (state = { chats: [] }, { type, payload }) => {
         chats: state.chats.map((chat) =>
           chat._id === payload.chatId
             ? { ...chat, name: payload.newName }
+            : chat,
+        ),
+      };
+    case UPDATE_AVATAR_CHAT:
+      return {
+        ...state,
+        loading: false,
+        chats: state.chats.map((chat) =>
+          chat._id === payload.chatId
+            ? { ...chat, avatar: payload.avatar }
             : chat,
         ),
       };
@@ -115,6 +126,15 @@ export const newChatReducer = (state = {}, { type, payload }) => {
             ? { ...state.chat, name: payload.newName }
             : state.chat,
       };
+    case UPDATE_AVATAR_CHAT:
+      return {
+        ...state,
+        loading: false,
+        chat:
+          state.chat?._id === payload.chatId
+            ? { ...state.chat, avatar: payload.avatar }
+            : state.chat,
+      };
     case DELETE_USER_CHAT:
       return {
         ...state,
@@ -156,7 +176,10 @@ export const updateChatName = (chatId, newName) => ({
   type: UPDATE_NAME_CHAT,
   payload: { chatId, newName },
 });
-
+export const updateAvatarChat = (chatId, avatar) => ({
+  type: UPDATE_AVATAR_CHAT,
+  payload: { chatId, avatar },
+});
 export const deleteUsersFromChat = (chatId, userIds) => ({
   type: DELETE_USER_CHAT,
   payload: { chatId, userIds },

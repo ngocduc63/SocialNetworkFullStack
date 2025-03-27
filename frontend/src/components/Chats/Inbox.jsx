@@ -18,10 +18,7 @@ import {
   ALL_MESSAGES_ADD,
   NEW_MESSAGE_RESET,
 } from "../../constants/messageConstants";
-import {
-  BASE_POST_IMAGE_URL,
-  BASE_PROFILE_IMAGE_URL,
-} from "../../utils/constants";
+import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
 import Sidebar from "./Sidebar";
 import Message from "./Message";
 import { Picker } from "emoji-mart";
@@ -267,7 +264,9 @@ const Inbox = () => {
                         draggable="false"
                         loading="lazy"
                         className="w-full h-full rounded-full object-cover"
-                        src={BASE_POST_IMAGE_URL + "hero.png"}
+                        src={
+                          BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png"
+                        }
                         alt="avatar"
                       />
                     ) : (

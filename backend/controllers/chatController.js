@@ -1,6 +1,7 @@
 const catchAsync = require("../middlewares/catchAsync");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
+const deleteFile = require("../utils/deleteFile");
 
 exports.newChat = catchAsync(async (req, res, next) => {
   const users = req.body.users;
@@ -35,6 +36,7 @@ exports.newChat = catchAsync(async (req, res, next) => {
     const newChat = await Chat.create({
       users: [req.user._id, ...users],
       name: `${user.name} và ${users.length} người khác`,
+      avatar: "hero.png",
     });
 
     res.status(200).json({
@@ -84,6 +86,42 @@ exports.renameGroup = catchAsync(async (req, res, next) => {
   res.status(200).json({
     success: true,
     chat: updatedChat,
+  });
+});
+
+exports.updateAvatarGroup = catchAsync(async (req, res, next) => {
+  const { chatId, avatar } = req.body;
+
+  if (!chatId) {
+    return res.status(400).json({
+      success: false,
+      message: "Vui lòng cung cấp chatId",
+    });
+  }
+
+  if (avatar !== "") {
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      { avatar: req.file.filename },
+      { new: true, runValidators: true },
+    ).populate("users latestMessage");
+
+    if (!updatedChat) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy nhóm chat",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      chat: updatedChat,
+    });
+  }
+
+  return res.status(400).json({
+    success: false,
+    message: "Vui lòng cung cấp avatar",
   });
 });
 

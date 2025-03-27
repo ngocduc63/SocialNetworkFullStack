@@ -3,9 +3,13 @@ import { Avatar, Box, Checkbox, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/PersonAdd";
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeMembers, renameGroup } from "../../actions/chatAction";
+import {
+  removeMembers,
+  renameGroup,
+  updateAvatarGroup,
+} from "../../actions/chatAction";
 import SearchModal from "./SearchModal";
 
 const ChatDetailModal = ({ chat, open, onClose, users }) => {
@@ -15,9 +19,24 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
   const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
   const [isShowAddMember, setIsShowAddMember] = useState(false);
+  const [avatar, setAvatar] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const avatarInput = useRef(null);
 
   const groupAdmin = users[0];
   const isGroupAdmin = groupAdmin?._id === loggedInUser._id;
+
+  const handleAvatarChange = (e) => {
+    const reader = new FileReader();
+    setAvatar("");
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setAvatarPreview(reader.result);
+      }
+    };
+    reader.readAsDataURL(e.target.files[0]);
+    setAvatar(e.target.files[0]);
+  };
 
   const handleSelect = (userId) => {
     if (isGroupAdmin && userId !== groupAdmin._id && users.length > 2) {
@@ -49,6 +68,13 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
     if (isGroupAdmin && chat.name !== groupName) {
       dispatch(renameGroup(chat._id, groupName));
     }
+    if (avatar) {
+      const formData = new FormData();
+      formData.set("avatar", avatar);
+      formData.set("chatId", chat._id);
+      dispatch(updateAvatarGroup(formData));
+    }
+    setAvatarPreview("");
     setIsEditing(false);
   };
 
@@ -64,16 +90,53 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
     <Modal
       title={
         <Box display="flex" justifyContent="space-between" alignItems="center">
+          <div className="flex flex-col items-center gap-2 ">
+            <div
+              className="w-11 h-11 cursor-pointer"
+              onClick={(e) => avatarInput.current.click()}
+            >
+              <img
+                draggable="false"
+                className="w-full h-full rounded-full border object-cover"
+                src={
+                  avatarPreview
+                    ? avatarPreview
+                    : (BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png")
+                }
+                alt="avatar"
+              />
+            </div>
+            <div className="flex flex-col gap-0">
+              <label
+                onClick={(e) => avatarInput.current.click()}
+                className="text-sm font-medium text-primary-blue cursor-pointer"
+              >
+                Đổi ảnh
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                name="avatar"
+                ref={avatarInput}
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </div>
+          </div>
           {isEditing && isGroupAdmin ? (
-            <Input
-              value={groupName}
-              onChange={handleNameChange}
-              onPressEnter={handleSaveName}
-              style={{ width: "70%" }}
-            />
+            <>
+              <Input
+                value={groupName}
+                onChange={handleNameChange}
+                onPressEnter={handleSaveName}
+                style={{ width: "70%" }}
+              />
+            </>
           ) : (
             <Box>
-              <Typography variant="h6">{groupName}</Typography>
+              <Typography variant="h6" className="font-bold">
+                {groupName}
+              </Typography>
               {groupAdmin && (
                 <Typography variant="caption" color="text.secondary">
                   {groupAdmin._id === loggedInUser._id ? "Trưởng nhóm" : ""}
@@ -84,7 +147,7 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
           <Box className="flex gap-1 items-center">
             {isGroupAdmin && (
               <>
-                {isEditing ? (
+                {isEditing || avatarPreview ? (
                   <Button
                     type="primary"
                     onClick={handleSaveName}
@@ -112,9 +175,7 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
                       icon={<AddIcon />}
                       onClick={onOpenAddMember}
                       style={{ marginLeft: 8 }}
-                    >
-                      Thêm thành viên
-                    </Button>
+                    ></Button>
                   </>
                 )}
               </>

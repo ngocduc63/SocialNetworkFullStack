@@ -110,7 +110,9 @@ const NewDialog = ({
     <Dialog open={open} onClose={onClose}>
       <div className="flex flex-col w-80 sm:w-96">
         <div className="flex justify-between items-center px-4 border-b py-2.5">
-          <span className="font-medium mx-auto">New Message</span>
+          <span className="font-medium mx-auto">
+            {isAddMember ? "Thêm thành viên" : "Tạo đoạn chat"}
+          </span>
           <svg
             onClick={onClose}
             className="cursor-pointer"
@@ -148,11 +150,11 @@ const NewDialog = ({
         </div>
 
         <div className="flex items-center gap-3 border-b p-3">
-          <span className="font-medium">To:</span>
+          <span className="font-medium">User:</span>
           <input
             className="outline-none w-full"
             type="text"
-            placeholder="Search User.."
+            placeholder="Tìm User.."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
