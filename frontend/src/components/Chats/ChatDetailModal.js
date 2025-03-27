@@ -89,99 +89,105 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
   return (
     <Modal
       title={
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <div className="flex flex-col items-center gap-2 ">
-            <div
-              className="w-11 h-11 cursor-pointer"
-              onClick={(e) => avatarInput.current.click()}
-            >
-              <img
-                draggable="false"
-                className="w-full h-full rounded-full border object-cover"
-                src={
-                  avatarPreview
-                    ? avatarPreview
-                    : (BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png")
-                }
-                alt="avatar"
-              />
-            </div>
-            <div className="flex flex-col gap-0">
-              <label
+        chat.name ? (
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <div className="flex flex-col items-center gap-2 ">
+              <div
+                className="w-11 h-11 cursor-pointer"
                 onClick={(e) => avatarInput.current.click()}
-                className="text-sm font-medium text-primary-blue cursor-pointer"
               >
-                Đổi ảnh
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                name="avatar"
-                ref={avatarInput}
-                onChange={handleAvatarChange}
-                className="hidden"
-              />
+                <img
+                  draggable="false"
+                  className="w-full h-full rounded-full border object-cover"
+                  src={
+                    avatarPreview
+                      ? avatarPreview
+                      : (BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png")
+                  }
+                  alt="avatar"
+                />
+              </div>
+              <div className="flex flex-col gap-0">
+                <label
+                  onClick={(e) => avatarInput.current.click()}
+                  className="text-sm font-medium text-primary-blue cursor-pointer"
+                >
+                  Đổi ảnh
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="avatar"
+                  ref={avatarInput}
+                  onChange={handleAvatarChange}
+                  className="hidden"
+                />
+              </div>
             </div>
-          </div>
-          {isEditing && isGroupAdmin ? (
-            <>
-              <Input
-                value={groupName}
-                onChange={handleNameChange}
-                onPressEnter={handleSaveName}
-                style={{ width: "70%" }}
-              />
-            </>
-          ) : (
-            <Box>
-              <Typography variant="h6" className="font-bold">
-                {groupName}
-              </Typography>
-              {groupAdmin && (
-                <Typography variant="caption" color="text.secondary">
-                  {groupAdmin._id === loggedInUser._id ? "Trưởng nhóm" : ""}
+            {isEditing && isGroupAdmin ? (
+              <>
+                <Input
+                  value={groupName}
+                  onChange={handleNameChange}
+                  onPressEnter={handleSaveName}
+                  style={{ width: "70%" }}
+                />
+              </>
+            ) : (
+              <Box>
+                <Typography variant="h6" className="font-bold">
+                  {groupName}
                 </Typography>
+                {groupAdmin && (
+                  <Typography variant="caption" color="text.secondary">
+                    {groupAdmin._id === loggedInUser._id ? "Trưởng nhóm" : ""}
+                  </Typography>
+                )}
+              </Box>
+            )}
+            <Box className="flex gap-1 items-center">
+              {isGroupAdmin && (
+                <>
+                  {isEditing || avatarPreview ? (
+                    <Button
+                      type="primary"
+                      onClick={handleSaveName}
+                      className="text-black"
+                    >
+                      Lưu
+                    </Button>
+                  ) : (
+                    <>
+                      <Button onClick={toggleEdit}>Đổi tên</Button>
+                      {selectedUsers.length > 0 && users.length > 2 && (
+                        <Button
+                          type="primary"
+                          danger
+                          size="normal"
+                          icon={<DeleteIcon />}
+                          onClick={handleClearSelection}
+                          style={{ marginLeft: 8 }}
+                        >
+                          Xóa ({selectedUsers.length})
+                        </Button>
+                      )}
+                      <Button
+                        type="default"
+                        icon={<AddIcon />}
+                        onClick={onOpenAddMember}
+                        style={{ marginLeft: 8 }}
+                      ></Button>
+                    </>
+                  )}
+                </>
               )}
             </Box>
-          )}
-          <Box className="flex gap-1 items-center">
-            {isGroupAdmin && (
-              <>
-                {isEditing || avatarPreview ? (
-                  <Button
-                    type="primary"
-                    onClick={handleSaveName}
-                    className="text-black"
-                  >
-                    Lưu
-                  </Button>
-                ) : (
-                  <>
-                    <Button onClick={toggleEdit}>Đổi tên</Button>
-                    {selectedUsers.length > 0 && users.length > 2 && (
-                      <Button
-                        type="primary"
-                        danger
-                        size="normal"
-                        icon={<DeleteIcon />}
-                        onClick={handleClearSelection}
-                        style={{ marginLeft: 8 }}
-                      >
-                        Xóa ({selectedUsers.length})
-                      </Button>
-                    )}
-                    <Button
-                      type="default"
-                      icon={<AddIcon />}
-                      onClick={onOpenAddMember}
-                      style={{ marginLeft: 8 }}
-                    ></Button>
-                  </>
-                )}
-              </>
-            )}
           </Box>
-        </Box>
+        ) : null
       }
       open={open}
       onCancel={onClose}
