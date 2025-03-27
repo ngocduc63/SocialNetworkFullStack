@@ -56,6 +56,21 @@ export const allChatsReducer = (state = { chats: [] }, { type, payload }) => {
           return chat;
         }),
       };
+    case ADD_USER_CHAT:
+      const newState = {
+        ...state,
+        loading: false,
+        chats: state.chats.map((chat) => {
+          if (chat._id === payload.chatId) {
+            return {
+              ...chat,
+              users: payload.users,
+            };
+          }
+          return chat;
+        }),
+      };
+      return newState;
     case CLEAR_ERRORS:
       return {
         ...state,
@@ -115,17 +130,18 @@ export const newChatReducer = (state = {}, { type, payload }) => {
             : state.chat,
       };
     case ADD_USER_CHAT:
-      return {
+      const newState = {
         ...state,
         loading: false,
         chat:
           state.chat?._id === payload.chatId
             ? {
                 ...state.chat,
-                users: [...state.chat.users, ...payload.userIds],
+                users: payload.users,
               }
             : state.chat,
       };
+      return newState;
     case CLEAR_ERRORS:
       return {
         ...state,
@@ -146,7 +162,7 @@ export const deleteUsersFromChat = (chatId, userIds) => ({
   payload: { chatId, userIds },
 });
 
-export const addUsersToChat = (chatId, userIds) => ({
+export const addUsersToChat = (chatId, users) => ({
   type: ADD_USER_CHAT,
-  payload: { chatId, userIds },
+  payload: { chatId, users },
 });

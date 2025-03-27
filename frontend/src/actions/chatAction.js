@@ -101,7 +101,7 @@ export const addMembers = (chatId, userIds) => async (dispatch) => {
       config,
     );
 
-    dispatch(addUsersToChat(chatId, userIds));
+    dispatch(addUsersToChat(chatId, data.chat.users));
   } catch (error) {
     // dispatch({
     //   type: NEW_CHAT_FAIL,

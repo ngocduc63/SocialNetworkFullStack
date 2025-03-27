@@ -80,6 +80,7 @@ const NewDialog = ({
   const createChat = () => {
     if (isAddMember) {
       dispatch(addMembers(chatId, selectedUsers));
+      onClose();
     } else {
       if (selectedUsers.length === 1) {
         dispatch(addNewChat([selectedUsers[0]]));
