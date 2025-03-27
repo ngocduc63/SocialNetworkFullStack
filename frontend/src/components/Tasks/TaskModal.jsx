@@ -95,7 +95,8 @@ export default function TaskModal({ open, onClose, task }) {
 		onClose();
 	};
 
-	const isDisabled = !formData.content.trim() || (task && formData.title === task.title);
+	const isDisabled =
+		!formData.content.trim() || (task && formData.title === task.title);
 	useEffect(() => {
 		if (task) {
 			setFormData({
@@ -210,7 +211,9 @@ export default function TaskModal({ open, onClose, task }) {
 					<p className="text-base font-semibold mb-1">Thời hạn</p>
 					<DatePicker
 						value={
-							formData.time ? dayjs(formData.time, 'HH:mm DD/MM/YYYY') : null
+							formData.time && formData.time !== 'Không thời hạn'
+								? dayjs(formData.time, 'HH:mm DD/MM/YYYY')
+								: null
 						}
 						placeholder="Không thời hạn"
 						showTime={{ format: 'HH:mm' }}
@@ -232,8 +235,7 @@ export default function TaskModal({ open, onClose, task }) {
 				</div>
 				<div
 					onClick={!isDisabled ? handleSaveTask : undefined}
-					className={`text-lg py-2 px-3 border rounded-md ${isDisabled ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'}`}
-				>
+					className={`text-lg py-2 px-3 border rounded-md ${isDisabled ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'}`}>
 					{task ? 'Chỉnh sửa' : 'Giao việc'}
 				</div>
 			</div>
