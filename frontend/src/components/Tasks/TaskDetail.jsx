@@ -1,6 +1,6 @@
 import { Input, Modal } from 'antd';
 import React, { useState } from 'react';
-import { IconBin, IconCheck, IconList, IconPen } from './SvgIcon';
+import { IconBin, IconCheck, IconList, IconPen, IconRedo } from './SvgIcon';
 import { BASE_PROFILE_IMAGE_URL } from '../../utils/constants';
 import Confirm from './Confirm';
 import TaskModal from './TaskModal';
@@ -9,7 +9,7 @@ import { deleteTask, updateTaskStatus } from '../../actions/taskAction';
 
 export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 	const { title, content, users, time, assigner, done } = task;
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 	const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false);
 	const [confirmType, setConfirmType] = useState(null);
 	const [isTaskModalOpen, setTaskModalOpen] = useState(false);
@@ -45,6 +45,11 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 		dispatch(deleteTask(task.id));
 		setIsModalConfirmOpen(false);
 		handleCancel();
+	};
+
+	const handleConfirmAgain = () => {
+		dispatch(updateTaskStatus(task.id, false));
+		setIsModalConfirmOpen(false);
 	};
 
 	return (
@@ -108,30 +113,38 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 							<p>{time}</p>
 						</div>
 						<div className="flex flex-col space-y-1">
-							<p className='text-base font-medium'>Giao cho</p>
+							<p className="text-base font-medium">Giao cho</p>
 							{users?.map((user) => (
-								<div className="flex space-x-2 items-center">
+								<div className="flex space-x-2 items-center" key={user.id}>
 									<img
-										key={user.id}
 										src={user.avatar}
 										alt={`${user.name}'s avatar`}
 										width={32}
 										height={32}
 										className="rounded-full"
 									/>
-									<p className='text-sm font-medium '>{user.name}</p>
+									<p className="text-sm font-medium ">{user.name}</p>
 								</div>
 							))}
 						</div>
 						<div className="flex flex-col text-base font-medium space-y-1">
 							<p>Tác vụ</p>
 							<div className="flex flex-col space-y-2">
-								<div
-									className="border w-full pl-3 py-2 flex space-x-2 hover:cursor-pointer shadow-lg rounded-lg hover:opacity-80"
-									onClick={(e) => showConfirm(e, 'complete')}>
-									<IconCheck width={24} height={24} />
-									<p>Hoàn thành</p>
-								</div>
+								{!done ? (
+									<div
+										className="border w-full pl-3 py-2 flex space-x-2 hover:cursor-pointer shadow-lg rounded-lg hover:opacity-80"
+										onClick={(e) => showConfirm(e, 'complete')}>
+										<IconCheck width={24} height={24} />
+										<p>Hoàn thành</p>
+									</div>
+								) : (
+									<div
+										className="border w-full pl-3 py-2 flex space-x-2 hover:cursor-pointer shadow-lg rounded-lg hover:opacity-80"
+										onClick={(e) => showConfirm(e, 'again')}>
+										<IconRedo width={24} height={24} />
+										<p>Giao lại</p>
+									</div>
+								)}
 								<div
 									className="border w-full pl-3 py-2 flex space-x-2 hover:cursor-pointer shadow-lg rounded-lg hover:opacity-80"
 									onClick={handleOpenTaskModal}>
@@ -153,7 +166,13 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
 				isModalOpen={isModalConfirmOpen}
 				handleCancel={handleCloseModalConfirm}
 				confirmType={confirmType}
-				onConfirm={confirmType === 'complete' ? handleConfirmComplete : handleConfirmDelete}
+				onConfirm={
+					confirmType === 'complete'
+						? handleConfirmComplete
+						: confirmType === 'again'
+							? handleConfirmAgain
+							: handleConfirmDelete
+				}
 			/>
 			<TaskModal
 				open={isTaskModalOpen}

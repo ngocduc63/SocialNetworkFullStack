@@ -30,7 +30,9 @@ export default function TaskListItem({ task }) {
 	};
 
 	const handleConfirmComplete = () => {
-		dispatch(updateTaskStatus(task.id, true));
+		!done
+			? dispatch(updateTaskStatus(task.id, true))
+			: dispatch(updateTaskStatus(task.id, false));
 		setIsModalConfirmOpen(false);
 	};
 
@@ -83,7 +85,7 @@ export default function TaskListItem({ task }) {
 						) : (
 							<p className=" text-green-500">Đã xong</p>
 						)}
-						<p className='text-gray-600'>Thời hạn: {time}</p>
+						<p className="text-gray-600">Thời hạn: {time}</p>
 					</div>
 				</div>
 				<div className="cursor-pointer">
@@ -93,7 +95,7 @@ export default function TaskListItem({ task }) {
 			<Confirm
 				isModalOpen={isModalConfirmOpen}
 				handleCancel={handleCloseModalConfirm}
-				confirmType={'complete'}
+				confirmType={!done ? 'complete' : 'again'}
 				onConfirm={handleConfirmComplete}
 			/>
 			<TaskDetail
