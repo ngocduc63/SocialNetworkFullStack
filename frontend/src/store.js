@@ -1,4 +1,5 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import {
@@ -23,6 +24,7 @@ import {
   allMessagesReducer,
   newMessageReducer,
 } from "./reducers/messageReducer";
+import { notificationReducer } from "./reducers/notificationsReducer";
 
 const reducer = combineReducers({
   user: userReducer,
@@ -42,6 +44,7 @@ const reducer = combineReducers({
   allMessages: allMessagesReducer,
   newMessage: newMessageReducer,
   newChat: newChatReducer,
+  notification: notificationReducer,
 });
 
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));

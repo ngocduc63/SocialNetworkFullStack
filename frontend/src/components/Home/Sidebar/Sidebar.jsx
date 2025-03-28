@@ -116,7 +116,7 @@ const Sidebar = () => {
               ))}
             </div>
           </div>
-          <span>&copy; {new Date().getFullYear()} INSTAGRAM FROM META</span>
+          <span>&copy; {new Date().getFullYear()} POLLUX FROM META</span>
         </div>
       </div>
     </div>
