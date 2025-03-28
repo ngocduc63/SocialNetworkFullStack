@@ -64,3 +64,20 @@ body {
         background: #555;
     }
 }
+
+/* Thêm vào file CSS của bạn */
+.highlight-post {
+    animation: highlight-animation 2s ease-in-out;
+}
+
+@keyframes highlight-animation {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5);
+    }
+}

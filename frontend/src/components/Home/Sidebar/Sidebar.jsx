@@ -2,13 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { getPostsOfFollowing } from "../../../actions/postAction";
-import {
-  clearErrors,
-  getSuggestedUsers,
-  loadUser,
-} from "../../../actions/userAction";
-import { POST_FOLLOWING_RESET } from "../../../constants/postConstants";
+import { clearErrors, getSuggestedUsers } from "../../../actions/userAction";
 import { FOLLOW_USER_RESET } from "../../../constants/userConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../../utils/constants";
 import SkeletonUserItem from "../../Layouts/SkeletonUserItem";
@@ -122,7 +116,7 @@ const Sidebar = () => {
               ))}
             </div>
           </div>
-          <span>&copy; {new Date().getFullYear()} INSTAGRAM FROM META</span>
+          <span>&copy; {new Date().getFullYear()} POLLUX FROM META</span>
         </div>
       </div>
     </div>
