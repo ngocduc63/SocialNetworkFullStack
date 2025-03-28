@@ -24,14 +24,12 @@ ChartJS.register(
 
 export default function ChartAboutTask() {
 	const tasksCount = useSelector(taskCountSelector);
-	const [selectedType, setSelectedType] = useState('assign'); 
+	const [selectedType, setSelectedType] = useState('assign');
 
-	
 	const handleChange = (value) => {
 		setSelectedType(value);
 	};
 
-	
 	const data = {
 		labels: ['Chưa xong', 'Đã xong', 'Quá hạn'],
 		datasets: [
@@ -76,16 +74,19 @@ export default function ChartAboutTask() {
 
 	return (
 		<>
-			<Select
-				defaultValue="assign"
-				style={{ marginBottom: 20 }}
-				onChange={handleChange} 
-				options={[
-					{ value: 'assign', label: 'TÔI GIAO' },
-					{ value: 'need', label: 'CẦN LÀM' },
-					{ value: 'follow', label: 'THEO DÕI' },
-				]}
-			/>
+			<div className="flex space-x-2">
+				<p className="text-lg">Loại: </p>
+				<Select
+					defaultValue="assign"
+					style={{ marginBottom: 20 }}
+					onChange={handleChange}
+					options={[
+						{ value: 'assign', label: 'TÔI GIAO' },
+						{ value: 'need', label: 'CẦN LÀM' },
+						{ value: 'follow', label: 'THEO DÕI' },
+					]}
+				/>
+			</div>
 			<div style={{ height: '500px' }}>
 				<Bar options={options} data={data} />
 			</div>
