@@ -61,7 +61,7 @@ export default function TaskModal({ open, onClose, task }) {
 
 	const handleDateChange = (date) => {
 		if (date) {
-			const formattedDate = date.format(' HH:mm DD-MM-YYYY');
+			const formattedDate = date.format('HH:mm DD-MM-YYYY');
 			setFormData((prev) => ({ ...prev, time: formattedDate }));
 		}
 	};

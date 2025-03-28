@@ -7,6 +7,7 @@ import TaskListItem from './TaskListItem';
 import { filteredTasksSelector } from './filterSelector';
 import { Tabs } from 'antd';
 import SearchTask from './SearchTask';
+import ChartAboutTask from './ChartAboutTask';
 // import { getTasks } from '../../actions/taskAction';
 const Tasks = () => {
 	const { tasks } = useSelector((state) => state.tasks);
@@ -58,7 +59,11 @@ const Tasks = () => {
 		{
 			label: <IconChart />,
 			key: 'chart',
-			children: <div>chart</div>,
+			children: (
+				<div>
+					<ChartAboutTask />
+				</div>
+			),
 		},
 	];
 	useEffect(() => {
