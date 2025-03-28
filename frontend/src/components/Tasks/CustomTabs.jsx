@@ -142,12 +142,12 @@ export default function CustomTabs({
 
 			{tasks.length === 0 && (
 				<div className="flex flex-col items-center pt-10">
-					<IconCheck width={120} height={120} />
+					<IconCheck width={80} height={80} />
 					<p>Danh sách công việc đang trống</p>
 					<span
 						className="mt-4 flex gap-1 text-primary-blue hover:cursor-pointer"
 						onClick={showModal}>
-						<p className="text-lg">Giao việc</p>
+						<p className="text-xl">Giao việc</p>
 						<IconAddTask className={'text-primary-blue'} />
 					</span>
 				</div>

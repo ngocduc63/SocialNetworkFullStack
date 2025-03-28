@@ -2,17 +2,15 @@ import { useEffect, useState } from 'react';
 import CustomTabs from './CustomTabs';
 import { IconAddTask, IconChart, IconMag, IconTask } from './SvgIcon';
 import TaskModal from './TaskModal';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import TaskListItem from './TaskListItem';
 import { filteredTasksSelector } from './filterSelector';
 import { Tabs } from 'antd';
 import SearchTask from './SearchTask';
 import ChartAboutTask from './ChartAboutTask';
-// import { getTasks } from '../../actions/taskAction';
 const Tasks = () => {
 	const { tasks } = useSelector((state) => state.tasks);
 	const filterTasks = useSelector(filteredTasksSelector);
-	// const dispatch = useDispatch();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const showModal = () => {
 		setIsModalOpen(true);
@@ -33,7 +31,7 @@ const Tasks = () => {
 						tasks={tasks}
 					/>
 					<div
-						className="space-y-3 overflow-y-auto  2xl:max-h-[550px] max-h-[530px]"
+						className="space-y-3 overflow-y-auto  2xl:max-h-[550px] max-h-[360px]"
 						style={{
 							scrollbarWidth: 'none',
 							msOverflowStyle: 'none',
@@ -91,7 +89,7 @@ const Tasks = () => {
 					tabBarGutter={10}
 					tabBarStyle={{
 						display: 'flex',
-						justifyContent: 'center', // Đảm bảo tabs nằm giữa
+						justifyContent: 'center', 
 					}}
 				/>
 			</div>

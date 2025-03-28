@@ -87,7 +87,7 @@ export default function ChartAboutTask() {
 					]}
 				/>
 			</div>
-			<div style={{ height: '500px' }}>
+			<div className='2xl:max-h-[500px] xl:max-h-[360px]'>
 				<Bar options={options} data={data} />
 			</div>
 		</>
