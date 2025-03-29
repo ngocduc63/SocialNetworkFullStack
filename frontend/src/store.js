@@ -49,6 +49,8 @@ const reducer = combineReducers({
   tasks: tasksReducer,
   filter: filterTaskReducer,
   notification: notificationReducer,
-})
+});
+
+const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
 
 export default store;
