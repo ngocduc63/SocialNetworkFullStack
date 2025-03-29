@@ -5,7 +5,7 @@ import MetaData from "../Layouts/MetaData";
 const Home = () => {
   return (
     <>
-      <MetaData title="Instagram" />
+      <MetaData title="Pollux" />
 
       <div className="flex h-full md:w-4/5 lg:w-4/6 mt-14 mx-auto">
         <PostsContainer />

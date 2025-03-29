@@ -6,37 +6,42 @@ const path = require("path");
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/public", express.static("public"));
 
 if (process.env.NODE_ENV != "production") {
-    require("dotenv").config({path: "backend/config/config.env"});
+  require("dotenv").config({ path: "backend/config/config.env" });
 }
 
 // import routes
+const comment = require("./routes/commentRoute");
+
 const post = require("./routes/postRoute");
 const user = require("./routes/userRoute");
 const chat = require("./routes/chatRoute");
 const message = require("./routes/messageRoute");
+const notificationRoute = require("./routes/notificationRoute");
 
+app.use("/api/v1", comment);
 app.use("/api/v1", post);
 app.use("/api/v1", user);
 app.use("/api/v1", chat);
 app.use("/api/v1", message);
+app.use("/api/v1", notificationRoute);
 
 // deployment
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "/frontend/build")));
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
 
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-    });
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
 } else {
-    app.get("/", (req, res) => {
-        res.send("Server is Running! 🚀");
-    });
+  app.get("/", (req, res) => {
+    res.send("Server is Running! 🚀");
+  });
 }
 
 // error middleware

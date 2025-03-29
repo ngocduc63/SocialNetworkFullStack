@@ -27,9 +27,10 @@ import SpinLoader from "../Layouts/SpinLoader";
 import MetaData from "../Layouts/MetaData";
 import { USER_DETAILS_RESET } from "../../constants/userConstants";
 import { AppContext } from "../../context/AppContext";
-import { IconAddImage, IconLike } from "./SvgIcon";
+import { IconAddImage, IconDetailChat, IconLike } from "./SvgIcon";
 import { CloseOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
+import ChatDetailModal from "./ChatDetailModal";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -45,14 +46,21 @@ const Inbox = () => {
   const [typingData, setTypingData] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [messReply, setMessReply] = useState({});
+  const [isShowDetailChat, setIsShowDetailChat] = useState(false);
 
   const [isOnline, setIsOnline] = useState(false);
   const [showEmojis, setShowEmojis] = useState(false);
 
   const [showSearch, setShowSearch] = useState(false);
 
+  const chatId = params.chatId;
   const { user: loggedInUser } = useSelector((state) => state.user);
   const { user: friend } = useSelector((state) => state.userDetails);
+  const chat = useSelector((state) =>
+    state.allChats.chats.find((chat) => chat._id === chatId),
+  );
+  const roomName = chat?.name ?? null;
+  const listUser = chat?.users ?? [];
   const { error, messages, loading } = useSelector(
     (state) => state.allMessages,
   );
@@ -198,8 +206,24 @@ const Inbox = () => {
     }
   };
 
+  const showDetailChat = () => {
+    setIsShowDetailChat(true);
+  };
+
+  const hiddenDetailChat = () => {
+    setIsShowDetailChat(false);
+  };
+
   return (
     <>
+      {isShowDetailChat && (
+        <ChatDetailModal
+          chat={chat}
+          open={showDetailChat}
+          onClose={hiddenDetailChat}
+          users={listUser}
+        />
+      )}
       <MetaData title="Instagram • Chats" />
 
       <div className="mt-14 sm:mt-[4.7rem] pb-4 rounded h-[90vh] xl:w-4/5 mx-auto sm:pr-14 sm:pl-8">
@@ -235,62 +259,35 @@ const Inbox = () => {
               <div className="flex py-3 px-6 border-b items-center justify-between">
                 <div className="flex gap-2 items-center">
                   <div className="w-8 h-8 relative">
-                    <img
-                      draggable="false"
-                      loading="lazy"
-                      className="w-full h-full rounded-full object-cover"
-                      src={BASE_PROFILE_IMAGE_URL + friend.avatar}
-                      alt="avatar"
-                    />
+                    {roomName ? (
+                      <img
+                        draggable="false"
+                        loading="lazy"
+                        className="w-full h-full rounded-full object-cover"
+                        src={
+                          BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png"
+                        }
+                        alt="avatar"
+                      />
+                    ) : (
+                      <img
+                        draggable="false"
+                        loading="lazy"
+                        className="w-full h-full rounded-full object-cover"
+                        src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+                        alt="avatar"
+                      />
+                    )}
+
                     {isOnline && (
                       <div className="absolute -right-0.5 -bottom-0.5 h-3 w-3 bg-green-500 rounded-full"></div>
                     )}
                   </div>
                   <span className="font-medium cursor-pointer">
-                    {friend.name}
+                    {roomName ?? friend.name}
                   </span>
                 </div>
-                <svg
-                  className="cursor-pointer"
-                  aria-label="View Thread Details"
-                  color="#262626"
-                  fill="#262626"
-                  height="24"
-                  role="img"
-                  viewBox="0 0 24 24"
-                  width="24"
-                >
-                  <circle
-                    cx="12.001"
-                    cy="12.005"
-                    fill="none"
-                    r="10.5"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  ></circle>
-                  <circle cx="11.819" cy="7.709" r="1.25"></circle>
-                  <line
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    x1="10.569"
-                    x2="13.432"
-                    y1="16.777"
-                    y2="16.777"
-                  ></line>
-                  <polyline
-                    fill="none"
-                    points="10.569 11.05 12 11.05 12 16.777"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  ></polyline>
-                </svg>
+                <IconDetailChat showDetailChat={showDetailChat} />
               </div>
 
               {/* messages */}

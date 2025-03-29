@@ -92,8 +92,8 @@ const SignUp = () => {
           <img
             draggable="false"
             className="mx-auto h-30 w-36 object-contain"
-            src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
-            alt=""
+            src="https://res.cloudinary.com/hdtien/image/upload/v1742995284/ten_mj9ed3.png"
+            alt="Pollux Logo"
           />
           <form
             onSubmit={handleRegister}

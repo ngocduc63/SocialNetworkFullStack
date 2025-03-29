@@ -3,7 +3,6 @@ const {
   newPost,
   likeUnlikePost,
   deletePost,
-  newComment,
   allPosts,
   getPostsOfFollowing,
   updateCaption,
@@ -49,7 +48,5 @@ router
   .post(isAuthenticated, saveUnsavePost)
   .put(isAuthenticated, updateCaption)
   .delete(isAuthenticated, deletePost);
-
-router.route("/post/comment/:id").post(isAuthenticated, newComment);
 
 module.exports = router;
