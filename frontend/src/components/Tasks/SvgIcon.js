@@ -102,8 +102,7 @@ export const IconList = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			width={24}
-			height={24}
+			className='w-5 2xl:w-6'
 			viewBox="0 0 24 24">
 			<path
 				fill="#000"

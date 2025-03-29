@@ -41,6 +41,7 @@ export default function TaskModal({ open, onClose, task }) {
 		users: [],
 		time: '',
 	});
+	const [width, setWidth] = useState(window.innerWidth >= 1536 ? 500 : 400);
 
 	const currentUser = React.useMemo(() => {
 		return user ? { id: user._id, name: user.name, avatar: user.avatar } : null;
@@ -97,6 +98,16 @@ export default function TaskModal({ open, onClose, task }) {
 
 	const isDisabled =
 		!formData.content.trim() || (task && formData.title === task.title);
+
+	useEffect(() => {
+		const handleResize = () => {
+			setWidth(window.innerWidth >= 1536 ? 500 : 400);
+		};
+		window.addEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	}, []);
 	useEffect(() => {
 		if (task) {
 			setFormData({
@@ -117,8 +128,11 @@ export default function TaskModal({ open, onClose, task }) {
 			onCancel={onClose}
 			footer={null}
 			destroyOnClose
+			width={width}
+			// style={{ top: '6vh' }}
+			className='top-[6vh] 2xl:top-28'
 			maskClosable>
-			<div className="border-t pt-2 flex flex-col space-y-3">
+			<div className="border-t pt-2 flex flex-col space-y-3 2xl:mt-0">
 				{/* Tiêu đề */}
 				<div>
 					<p className="text-base font-semibold mb-1">Tiêu đề</p>
@@ -229,13 +243,13 @@ export default function TaskModal({ open, onClose, task }) {
 			</div>
 			<div className="flex mt-5 gap-2">
 				<div
-					className="text-lg py-2 px-4 border rounded-md hover:text-[#1777FF] cursor-pointer"
+					className="2xl:text-lg text-base py-2 px-4 border rounded-md hover:text-[#1777FF] cursor-pointer"
 					onClick={onClose}>
 					Hủy
 				</div>
 				<div
 					onClick={!isDisabled ? handleSaveTask : undefined}
-					className={`text-lg py-2 px-3 border rounded-md ${isDisabled ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'}`}>
+					className={`2xl:text-lg text-base py-2 px-3 border rounded-md ${isDisabled ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-[#1777FF] text-white hover:opacity-75 cursor-pointer'}`}>
 					{task ? 'Chỉnh sửa' : 'Giao việc'}
 				</div>
 			</div>

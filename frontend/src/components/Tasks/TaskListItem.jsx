@@ -46,6 +46,7 @@ export default function TaskListItem({ task }) {
 					<div className="flex -space-x-2 group-hover:hidden">
 						<div className="relative w-8 h-8">
 							<img
+								// src={BASE_PROFILE_IMAGE_URL + users[0]?.avatar}
 								src={users[0]?.avatar}
 								alt={`${users[0]?.name}'s avatar`}
 								className="w-8 h-8 rounded-full"

@@ -58,7 +58,7 @@ export default function ChartAboutTask() {
 			title: {
 				display: true,
 				text: 'Thống kê công việc',
-				font: { size: 24, weight: 'bold' },
+				font: { size: 20, weight: 'bold' },
 				color: 'black',
 			},
 		},
@@ -87,7 +87,7 @@ export default function ChartAboutTask() {
 					]}
 				/>
 			</div>
-			<div className='2xl:max-h-[500px] xl:max-h-[360px]'>
+			<div className='2xl:h-[500px] h-[280px]'>
 				<Bar options={options} data={data} />
 			</div>
 		</>

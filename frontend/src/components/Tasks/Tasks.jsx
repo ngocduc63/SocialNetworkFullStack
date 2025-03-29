@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import CustomTabs from './CustomTabs';
 import { IconAddTask, IconChart, IconMag, IconTask } from './SvgIcon';
-import TaskModal from './TaskModal';
-import {  useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TaskListItem from './TaskListItem';
 import { filteredTasksSelector } from './filterSelector';
 import { Tabs } from 'antd';
@@ -12,7 +11,8 @@ const Tasks = () => {
 	const { tasks } = useSelector((state) => state.tasks);
 	const filterTasks = useSelector(filteredTasksSelector);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const showModal = () => {
+	const showModal = (e) => {
+		e.stopPropagation();
 		setIsModalOpen(true);
 	};
 	const handleCancel = () => {
@@ -23,7 +23,7 @@ const Tasks = () => {
 			label: <IconTask />,
 			key: 'task',
 			children: (
-				<div className="min-h-full">
+				<div className="mh-full">
 					<CustomTabs
 						isModalOpen={isModalOpen}
 						showModal={showModal}
@@ -31,7 +31,7 @@ const Tasks = () => {
 						tasks={tasks}
 					/>
 					<div
-						className="space-y-3 overflow-y-auto  2xl:max-h-[550px] max-h-[360px]"
+						className="space-y-3 overflow-y-auto  2xl:max-h-[480px] max-h-[256px]"
 						style={{
 							scrollbarWidth: 'none',
 							msOverflowStyle: 'none',
@@ -69,33 +69,28 @@ const Tasks = () => {
 		// dispatch(getTasks());
 	}, [filterTasks]);
 	return (
-		<div>
-			<div className=" justify-between px-4 py-2">
-				<Tabs
-					tabBarExtraContent={{
-						left: (
-							<div className="flex items-center gap-2 2xl:mr-44  mr-10">
-								<span className="font-semibold text-xl">To-Do</span>
-								<div onClick={showModal}>
-									<IconAddTask />
-								</div>
+		<div className=" justify-between px-4 py-2 h-full">
+			<Tabs
+				tabBarExtraContent={{
+					left: (
+						<div className="flex items-center gap-2 2xl:mr-48  mr-24">
+							<span className="font-semibold text-xl">To-Do</span>
+							<div onClick={showModal}>
+								<IconAddTask />
 							</div>
-						),
-					}}
-					defaultActiveKey="task"
-					items={items}
-					size="small"
-					type="line"
-					tabBarGutter={10}
-					tabBarStyle={{
-						display: 'flex',
-						justifyContent: 'center', 
-					}}
-				/>
-			</div>
-			{/* Tabs */}
-
-			<TaskModal open={isModalOpen} onClose={handleCancel} />
+						</div>
+					),
+				}}
+				defaultActiveKey="task"
+				items={items}
+				size="small"
+				type="line"
+				tabBarGutter={10}
+				tabBarStyle={{
+					display: 'flex',
+					justifyContent: 'center',
+				}}
+			/>
 		</div>
 	);
 };

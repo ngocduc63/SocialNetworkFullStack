@@ -36,17 +36,17 @@ export default function SearchTask() {
 	return (
 		<div>
 			<div className="flex flex-col gap-2">
-				<p className="text-lg font-semibold">Tìm kiếm công việc</p>
+				<p className="2xl:text-lg text-base font-semibold">Tìm kiếm công việc</p>
 				<Input
 					placeholder="Tìm kiếm công việc"
-					className="text-base"
+					className="2xl:text-base text-sm"
 					name="search"
 					value={search}
 					onChange={handleChangeInputSearch}
 				/>
 			</div>
 			<div
-				className="space-y-3 overflow-y-auto 2xl:max-h-[580px] max-h-[550px] mt-4"
+				className="space-y-3 overflow-y-auto  2xl:max-h-[480px] max-h-[268px] mt-2 2xl:mt-4"
 				style={{
 					scrollbarWidth: 'none',
 					msOverflowStyle: 'none',
