@@ -76,7 +76,7 @@ export default function TaskListItem({ task }) {
         <div className="flex-1 space-y-1">
           <span className="flex">
             <p className="font-semibold 2xl:text-sm text-xs">
-              {title === "" ? "(Không có tiêu đề)" : title}
+              {title}
             </p>
             <span className="hidden group-hover:block">
               <IconEditTitle />

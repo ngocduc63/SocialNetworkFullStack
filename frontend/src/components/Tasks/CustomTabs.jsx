@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setStatus, setType } from '../../actions/filterAction';
 import { taskCountSelector } from './filterSelector';
 
-const Filter = ({ pendingText, doneText, taskCountPending, taskCountDone }) => {
+const Filter = ({ pendingText, doneText, overdueText, taskCountPending, taskCountDone, taskCountOverdue }) => {
 	const dispatch = useDispatch();
 	const status = useSelector((state) => state.filter.status);
 	return (
@@ -48,6 +48,24 @@ const Filter = ({ pendingText, doneText, taskCountPending, taskCountDone }) => {
 					{taskCountDone === 0 ? (
 						<div className="border border-gray-300 rounded-lg 2xl:p-4 xl:p-3 shadow-sm 2xl:mt-4 xl:mt-1 text-center 2xl:text-base text-xs">
 							<p>{doneText}</p>
+						</div>
+					) : (
+						<div></div>
+					)}
+				</Tabs.TabPane>
+				<Tabs.TabPane
+					key="overdue"
+					tab={
+						<p className="2xl:text-sm text-xs">
+							Quá hạn
+							<span className="ml-1 bg-blue-400 rounded-full px-1 text-white">
+								{taskCountOverdue}
+							</span>
+						</p>
+					}>
+					{taskCountOverdue === 0 ? (
+						<div className="border border-gray-300 rounded-lg 2xl:p-4 xl:p-3 shadow-sm 2xl:mt-4 xl:mt-1 text-center 2xl:text-base text-xs">
+							<p>{overdueText}</p>
 						</div>
 					) : (
 						<div></div>
@@ -105,8 +123,10 @@ export default function CustomTabs({
 						<Filter
 							pendingText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ chưa hoàn thành."
 							doneText="Danh sách này sẽ gồm các công việc bạn giao cho người khác mà họ đã hoàn thành."
+							overdueText='Danh sách này sẽ gồm các công việc bạn giao cho người khác mà đã quá hạn'
 							taskCountPending={taskCount.assign.pending}
 							taskCountDone={taskCount.assign.done}
+							taskCountOverdue={taskCount.assign.overdue}
 						/>
 					</Tabs.TabPane>
 
@@ -123,8 +143,10 @@ export default function CustomTabs({
 						<Filter
 							pendingText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn chưa hoàn thành."
 							doneText="Danh sách này sẽ gồm các công việc giao cho bạn mà bạn đã hoàn thành."
+							overdueText='Danh sách này sẽ gồm các công việc giao cho bạn mà đã quá hạn.'
 							taskCountPending={taskCount.need.pending}
 							taskCountDone={taskCount.need.done}
+							taskCountOverdue={taskCount.need.overdue}
 						/>
 					</Tabs.TabPane>
 					{/* <Tabs.TabPane

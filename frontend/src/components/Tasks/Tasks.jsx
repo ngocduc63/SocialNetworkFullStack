@@ -39,7 +39,7 @@ const Tasks = () => {
             isModalOpen={isModalOpen}
             showModal={showModal}
             handleCancel={handleCancel}
-            tasks={tasks}
+            tasks={tasks.tasks}
           />
           <div
             className="space-y-3 overflow-y-auto  2xl:max-h-[480px] max-h-[256px]"

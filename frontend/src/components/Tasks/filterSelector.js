@@ -12,6 +12,20 @@ export const filteredTasksSelector = createSelector(
 
     if (filteredTasks.length <= 0) return [];
 
+    const now = new Date();
+    const parseTaskTime = (time) => {
+      if (!time || time === "Không thời hạn") return null;
+
+      const parts = time.split(" ");
+      const [timePart, datePart] = parts;
+      const [day, month, year] = datePart.split("-").map(Number);
+      const [hour, minute] = timePart.split(":").map(Number);
+
+      const parsedDate = new Date(year, month - 1, day, hour, minute);
+
+      return parsedDate;
+    };
+
     if (filter.type === "assign") {
       filteredTasks = filteredTasks.filter(
         (task) => task.assigner._id === user._id,
@@ -25,11 +39,25 @@ export const filteredTasksSelector = createSelector(
     }
 
     if (filter.status === "pending") {
-      filteredTasks = filteredTasks.filter((task) => task.done === false);
+      filteredTasks = filteredTasks.filter(
+        (task) =>
+          task.done === false &&
+          (parseTaskTime(task.time) === null ||
+            parseTaskTime(task.time) >= now),
+      );
     }
 
     if (filter.status === "done") {
       filteredTasks = filteredTasks.filter((task) => task.done === true);
+    }
+
+    if (filter.status === "overdue") {
+      filteredTasks = filteredTasks.filter(
+        (task) =>
+          !task.done &&
+          parseTaskTime(task.time) !== null &&
+          parseTaskTime(task.time) < now,
+      );
     }
 
     return filteredTasks.sort((a, b) =>
@@ -80,9 +108,6 @@ export const taskCountSelector = createSelector(
     return {
       assign: countByType((task) => task.assigner._id === user._id),
       need: countByType((task) => task.users.some((u) => u._id === user._id)),
-      follow: countByType((task) =>
-        task.followers?.some((u) => u._id === user._id),
-      ),
     };
   },
 );
