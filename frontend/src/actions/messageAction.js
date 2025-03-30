@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  ALL_MESSAGES_DELETE,
   ALL_MESSAGES_FAIL,
   ALL_MESSAGES_REQUEST,
   ALL_MESSAGES_SUCCESS,
@@ -7,7 +8,7 @@ import {
   NEW_MESSAGE_FAIL,
   NEW_MESSAGE_REQUEST,
   NEW_MESSAGE_SUCCESS,
-} from "../constants/messageConstants";
+} from "../constants/messageConstants"; // Get All Messages
 
 // Get All Messages
 export const getAllMessages = (chatId) => async (dispatch) => {
@@ -24,6 +25,22 @@ export const getAllMessages = (chatId) => async (dispatch) => {
     dispatch({
       type: ALL_MESSAGES_FAIL,
       payload: error.response.data.message,
+    });
+  }
+};
+
+export const deleteMessage = (messId) => async (dispatch) => {
+  try {
+    const { data } = await axios.delete(`/api/v1/deleteMessage/${messId}`);
+
+    dispatch({
+      type: ALL_MESSAGES_DELETE,
+      payload: { messId },
+    });
+  } catch (error) {
+    dispatch({
+      type: NEW_MESSAGE_FAIL,
+      payload: "Lỗi xóa tin nhắn",
     });
   }
 };

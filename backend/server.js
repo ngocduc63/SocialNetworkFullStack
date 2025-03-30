@@ -144,6 +144,10 @@ io.on("connection", (socket) => {
     io.to(`chat_${chatId}`).emit("receiveMessage", data);
     console.log(`Message sent to room ${chatId}:`, data);
   });
+  socket.on("deleteMessage", ({ chatId, ...data }) => {
+    io.to(`chat_${chatId}`).emit("receiveDeleteMessage", data);
+    console.log(`receiveDeleteMessage sent to room ${chatId}:`, data);
+  });
   // socket.on("sendMessage", ({ senderId, receiverId, content, idReply }) => {
   //   console.log(`Message from ${senderId} to ${receiverId}`);
   //

@@ -1,5 +1,6 @@
 import {
   ALL_MESSAGES_ADD,
+  ALL_MESSAGES_DELETE,
   ALL_MESSAGES_FAIL,
   ALL_MESSAGES_REQUEST,
   ALL_MESSAGES_SUCCESS,
@@ -35,6 +36,28 @@ export const allMessagesReducer = (
       return {
         ...state,
         messages: [...state.messages, payload],
+      };
+    case ALL_MESSAGES_DELETE:
+      return {
+        ...state,
+        messages: state.messages.map((msg) => {
+          if (msg._id === payload.messId) {
+            return {
+              ...msg,
+              content: "Tin nhắn đã bị xóa",
+            };
+          } else if (msg?.idReply && msg.idReply._id === payload.messId) {
+            return {
+              ...msg,
+              idReply: {
+                ...msg.idReply,
+                content: "Tin nhắn đã bị xóa",
+              },
+            };
+          } else {
+            return msg;
+          }
+        }),
       };
     case CLEAR_ERRORS:
       return {

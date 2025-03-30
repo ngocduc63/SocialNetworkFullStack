@@ -6,6 +6,7 @@ import { clearErrors, getAllChats } from "../../actions/chatAction";
 import ChatListItem from "./ChatListItem";
 import { IconCreateChat, IconCreateTask } from "./SvgIcon";
 import Tasks from "../Tasks/Tasks";
+import { Tooltip } from "antd";
 
 const Sidebar = ({ openModal, socket }) => {
   const dispatch = useDispatch();
@@ -34,8 +35,16 @@ const Sidebar = ({ openModal, socket }) => {
             {user.username}
           </span>
           <div className="flex items-center gap-2">
-            <IconCreateTask handleShowTaskView={handleShowTaskView} />
-            <IconCreateChat openModal={openModal} />
+            <Tooltip title="Quản lí công việc">
+              <div>
+                <IconCreateTask handleShowTaskView={handleShowTaskView} />
+              </div>
+            </Tooltip>
+            <Tooltip title="Tạo đoạn chat">
+              <div>
+                <IconCreateChat openModal={openModal} />
+              </div>
+            </Tooltip>
           </div>
         </div>
 

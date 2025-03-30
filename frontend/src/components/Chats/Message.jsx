@@ -1,7 +1,8 @@
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
-import { EllipsisOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EllipsisOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { ReplyIcon } from "./SvgIcon";
+import { Modal, Tooltip } from "antd";
 
 const IconContainer = ({ children, onClick }) => {
   return (
@@ -14,12 +15,31 @@ const IconContainer = ({ children, onClick }) => {
   );
 };
 
-const MessageContainer = ({ children, ownMsg, handleSetReply, message }) => {
+const MessageContainer = ({
+  children,
+  ownMsg,
+  handleSetReply,
+  message,
+  handleDeleteMessage,
+  checkIsDelete,
+}) => {
   const [hover, setHover] = useState(false);
+  const showDeleteConfirm = () => {
+    Modal.confirm({
+      title: "Xác nhận xóa tin nhắn",
+      content: "Bạn có chắc chắn muốn xóa tin nhắn này không?",
+      okText: "Xóa",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk: () => handleDeleteMessage(message._id, message.sender),
+    });
+  };
 
   return (
     <div
-      className={`relative flex w-full flex-col ${ownMsg ? "items-end" : "items-start"}`}
+      className={`relative flex w-full flex-col ${
+        ownMsg ? "items-end" : "items-start"
+      }`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -35,12 +55,18 @@ const MessageContainer = ({ children, ownMsg, handleSetReply, message }) => {
         </div>
       )}
 
-      {/* Tin nhắn chính */}
       <div
-        className={`flex items-center gap-2 ${!ownMsg ? "flex-row-reverse" : "flex-row"}`}
+        className={`flex items-center gap-2 ${
+          !ownMsg ? "flex-row-reverse" : "flex-row"
+        }`}
       >
-        {hover && (
+        {hover && !checkIsDelete && (
           <>
+            {ownMsg && (
+              <IconContainer onClick={showDeleteConfirm}>
+                <DeleteOutlined className="text-red-500" />
+              </IconContainer>
+            )}
             <IconContainer>
               <EllipsisOutlined className="text-gray-600" />
             </IconContainer>
@@ -59,18 +85,35 @@ const MessageContainer = ({ children, ownMsg, handleSetReply, message }) => {
   );
 };
 
-const Message = ({ ownMsg, friend, message, handleSetReply }) => {
+const Message = ({
+  ownMsg,
+  friend,
+  message,
+  handleSetReply,
+  handleDeleteMessage,
+}) => {
+  const checkIsDelete = message.content === "Tin nhắn đã bị xóa";
   return ownMsg ? (
     <div className="flex justify-end w-full mb-2">
       <MessageContainer
         ownMsg={ownMsg}
         handleSetReply={handleSetReply}
         message={message}
+        handleDeleteMessage={handleDeleteMessage}
+        checkIsDelete={checkIsDelete}
       >
-        {message.content === "❤️" ? (
+        {checkIsDelete ? (
+          <span className="text-sm text-red-400 bg-gray-100 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">
+            Tin nhắn đã bị xóa
+          </span>
+        ) : message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span className="text-sm text-white bg-violet-600 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">
+          <span
+            className={`text-sm px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words ${
+              ownMsg ? "text-white bg-violet-600" : "bg-gray-200"
+            }`}
+          >
             {message.content}
           </span>
         )}
@@ -78,21 +121,33 @@ const Message = ({ ownMsg, friend, message, handleSetReply }) => {
     </div>
   ) : (
     <div className="flex justify-start items-end gap-2 w-full mb-2">
-      <img
-        draggable="false"
-        className="w-7 h-7 rounded-full object-cover"
-        src={BASE_PROFILE_IMAGE_URL + friend.avatar}
-        alt="avatar"
-      />
+      <Tooltip title={friend.name}>
+        <img
+          draggable="false"
+          className="w-7 h-7 rounded-full object-cover"
+          src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+          alt="avatar"
+        />
+      </Tooltip>
       <MessageContainer
         ownMsg={ownMsg}
         handleSetReply={handleSetReply}
         message={message}
+        handleDeleteMessage={handleDeleteMessage}
+        checkIsDelete={checkIsDelete}
       >
-        {message.content === "❤️" ? (
+        {checkIsDelete ? (
+          <span className="text-sm text-red-400 bg-gray-100 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">
+            Tin nhắn đã bị xóa
+          </span>
+        ) : message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span className="px-4 py-3 text-sm bg-gray-200 rounded-3xl max-w-xs  whitespace-pre-wrap break-words">
+          <span
+            className={`text-sm px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words ${
+              ownMsg ? "text-white bg-violet-600" : "bg-gray-200"
+            }`}
+          >
             {message.content}
           </span>
         )}

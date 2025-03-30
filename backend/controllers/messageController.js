@@ -27,6 +27,26 @@ exports.newMessage = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.deleteMessage = catchAsync(async (req, res, next) => {
+  const { messId } = req.params;
+
+  const message = await Message.findById(messId);
+  if (!message) {
+    return res.status(404).json({
+      success: false,
+      message: "Tin nhắn không tồn tại",
+    });
+  }
+
+  message.content = "Tin nhắn đã bị xóa";
+  await message.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Tin nhắn đã được cập nhật thành 'Tin nhắn đã bị xóa'",
+  });
+});
+
 // Get All Messages
 exports.getMessages = catchAsync(async (req, res, next) => {
   const messages = await Message.find({
