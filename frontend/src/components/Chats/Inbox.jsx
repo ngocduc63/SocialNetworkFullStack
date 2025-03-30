@@ -69,15 +69,15 @@ const Inbox = () => {
   const userId = params.userId;
 
   useEffect(() => {
-    if (!socket) return;
-    socket.current.on("getMessage", (data) => {
-      if (data?.senderId === userId) {
+    if (!socket || !chat) return;
+    socket.current.emit("joinRoom", `chat_${chat._id}`);
+    socket.current.on("receiveMessage", (data) => {
+      const senderId = data.senderId;
+      if (senderId !== loggedInUser._id) {
         dispatch({
           type: ALL_MESSAGES_ADD,
           payload: {
-            sender: data.senderId,
-            content: data.content,
-            idReply: data.idReply,
+            ...data,
             createdAt: Date.now(),
           },
         });
@@ -89,7 +89,11 @@ const Inbox = () => {
     socket.current.on("typing stop", (senderId) => {
       setTypingData({ senderId, typing: false });
     });
-  }, [socket]);
+
+    return () => {
+      socket.current.emit("leaveRoom", chat._id);
+    };
+  }, [socket, chat, loggedInUser]);
 
   useEffect(() => {
     typingData &&
@@ -134,6 +138,7 @@ const Inbox = () => {
       e.preventDefault();
 
       socket?.current.emit("sendMessage", {
+        chatId: chat._id,
         senderId: loggedInUser._id,
         receiverId: userId,
         content: msg,
@@ -151,7 +156,7 @@ const Inbox = () => {
         handleSetReply();
       }
     },
-    [messReply, message],
+    [messReply, message, chat],
   );
 
   useEffect(() => {

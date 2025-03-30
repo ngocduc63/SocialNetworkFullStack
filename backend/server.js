@@ -136,19 +136,27 @@ io.on("connection", (socket) => {
   });
 
   // Xử lý chat message
-  socket.on("sendMessage", ({ senderId, receiverId, content, idReply }) => {
-    console.log(`Message from ${senderId} to ${receiverId}`);
-
-    const receiverSocketId = userSockets[receiverId];
-
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("getMessage", {
-        senderId,
-        content,
-        idReply,
-      });
-    }
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    console.log(`User ${socket.id} joined room ${roomId}`);
   });
+  socket.on("sendMessage", ({ chatId, ...data }) => {
+    io.to(`chat_${chatId}`).emit("receiveMessage", data);
+    console.log(`Message sent to room ${chatId}:`, data);
+  });
+  // socket.on("sendMessage", ({ senderId, receiverId, content, idReply }) => {
+  //   console.log(`Message from ${senderId} to ${receiverId}`);
+  //
+  //   const receiverSocketId = userSockets[receiverId];
+  //
+  //   if (receiverSocketId) {
+  //     io.to(receiverSocketId).emit("getMessage", {
+  //       senderId,
+  //       content,
+  //       idReply,
+  //     });
+  //   }
+  // });
 
   // Xử lý typing states
   socket.on("typing", ({ senderId, receiverId }) => {

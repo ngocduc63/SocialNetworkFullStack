@@ -15,7 +15,7 @@ exports.newChat = catchAsync(async (req, res, next) => {
       },
     });
 
-    if (chatExists) {
+    if (chatExists && chatExists.users.length === 2) {
       return res.status(200).json({
         success: true,
         newChat: chatExists,
