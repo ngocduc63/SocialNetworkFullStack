@@ -1,7 +1,6 @@
 const catchAsync = require("../middlewares/catchAsync");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
-const deleteFile = require("../utils/deleteFile");
 
 exports.newChat = catchAsync(async (req, res, next) => {
   const users = req.body.users;

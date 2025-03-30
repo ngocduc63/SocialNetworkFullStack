@@ -21,6 +21,7 @@ const post = require("./routes/postRoute");
 const user = require("./routes/userRoute");
 const chat = require("./routes/chatRoute");
 const message = require("./routes/messageRoute");
+const task = require("./routes/taskRoute");
 const notificationRoute = require("./routes/notificationRoute");
 
 app.use("/api/v1", comment);
@@ -28,6 +29,7 @@ app.use("/api/v1", post);
 app.use("/api/v1", user);
 app.use("/api/v1", chat);
 app.use("/api/v1", message);
+app.use("/api/v1", task);
 app.use("/api/v1", notificationRoute);
 
 // deployment
