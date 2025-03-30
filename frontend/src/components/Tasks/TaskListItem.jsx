@@ -5,6 +5,7 @@ import Confirm from "./Confirm";
 import TaskDetail from "./TaskDetail";
 import { useDispatch } from "react-redux";
 import { updateTaskStatus } from "../../actions/taskAction";
+import { Tooltip } from "antd";
 
 export default function TaskListItem({ task }) {
   const { title, content, users, time, assigner, done } = task;
@@ -61,12 +62,14 @@ export default function TaskListItem({ task }) {
           </div>
 
           {/* Checkbox (Hiện khi hover) */}
-          <input
-            type="checkbox"
-            className="hidden group-hover:block w-5 h-5 m-1 hover:cursor-pointer"
-            onClick={showConfirm}
-            checked={done}
-          />
+          <Tooltip title={"Đánh dấu đã hoàn thành"}>
+            <input
+              type="checkbox"
+              className="hidden group-hover:block w-5 h-5 m-1 hover:cursor-pointer"
+              onClick={showConfirm}
+              checked={done}
+            />
+          </Tooltip>
         </div>
 
         {/* Nội dung công việc */}
