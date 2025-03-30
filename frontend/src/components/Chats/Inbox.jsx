@@ -10,12 +10,14 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   clearErrors,
+  deleteMessage,
   getAllMessages,
   sendMessage,
 } from "../../actions/messageAction";
 import { getUserDetailsById } from "../../actions/userAction";
 import {
   ALL_MESSAGES_ADD,
+  ALL_MESSAGES_DELETE,
   NEW_MESSAGE_RESET,
 } from "../../constants/messageConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
@@ -42,8 +44,6 @@ const Inbox = () => {
   const { socket } = useContext(AppContext);
 
   const [typing, setTyping] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingData, setTypingData] = useState({});
   const [isReply, setIsReply] = useState(false);
   const [messReply, setMessReply] = useState({});
   const [isShowDetailChat, setIsShowDetailChat] = useState(false);
@@ -69,8 +69,8 @@ const Inbox = () => {
   const userId = params.userId;
 
   useEffect(() => {
-    if (!socket || !chat) return;
-    socket.current.emit("joinRoom", `chat_${chat._id}`);
+    if (!socket || !loggedInUser || !chatId) return;
+    socket.current.emit("joinRoom", `chat_${chatId}`);
     socket.current.on("receiveMessage", (data) => {
       const senderId = data.senderId;
       if (senderId !== loggedInUser._id) {
@@ -83,23 +83,21 @@ const Inbox = () => {
         });
       }
     });
-    socket.current.on("typing", (senderId) => {
-      setTypingData({ senderId, typing: true });
+    socket.current.on("receiveDeleteMessage", (data) => {
+      const { senderId, messId } = data;
+      if (senderId !== loggedInUser._id) {
+        dispatch({
+          type: ALL_MESSAGES_DELETE,
+          payload: {
+            messId,
+          },
+        });
+      }
     });
-    socket.current.on("typing stop", (senderId) => {
-      setTypingData({ senderId, typing: false });
-    });
-
     return () => {
-      socket.current.emit("leaveRoom", chat._id);
+      socket.current.emit("leaveRoom", chatId);
     };
-  }, [socket, chat, loggedInUser]);
-
-  useEffect(() => {
-    typingData &&
-      typingData.senderId === userId &&
-      setIsTyping(typingData.typing);
-  }, [typingData, userId]);
+  }, [socket, chatId, loggedInUser]);
 
   useEffect(() => {
     socket.current.emit("addUser", loggedInUser._id);
@@ -138,7 +136,7 @@ const Inbox = () => {
       e.preventDefault();
 
       socket?.current.emit("sendMessage", {
-        chatId: chat._id,
+        chatId: chatId,
         senderId: loggedInUser._id,
         receiverId: userId,
         content: msg,
@@ -156,7 +154,7 @@ const Inbox = () => {
         handleSetReply();
       }
     },
-    [messReply, message, chat],
+    [messReply, message, chatId],
   );
 
   useEffect(() => {
@@ -200,6 +198,20 @@ const Inbox = () => {
     }
     setMessReply(mess);
   }, []);
+
+  const handleDeleteMessage = useCallback(
+    (messId, senderId) => {
+      if (messId && dispatch && socket && senderId) {
+        dispatch(deleteMessage(messId));
+        socket?.current.emit("deleteMessage", {
+          chatId: chatId,
+          messId,
+          senderId,
+        });
+      }
+    },
+    [dispatch, socket],
+  );
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -304,28 +316,20 @@ const Inbox = () => {
                     <React.Fragment key={mess._id}>
                       <Message
                         ownMsg={mess.sender === loggedInUser._id}
-                        friend={friend}
+                        friend={
+                          roomName
+                            ? chat.users.find(
+                                (user) => user._id === mess.sender,
+                              )
+                            : friend
+                        }
                         message={mess}
                         handleSetReply={handleSetReply}
+                        handleDeleteMessage={handleDeleteMessage}
                       />
                       <div ref={scrollRef}></div>
                     </React.Fragment>
                   ))
-                )}
-                {isTyping && (
-                  <>
-                    <div className="flex items-center gap-3 max-w-xs">
-                      <img
-                        draggable="false"
-                        loading="lazy"
-                        className="w-7 h-7 rounded-full object-cover"
-                        src={BASE_PROFILE_IMAGE_URL + friend.avatar}
-                        alt="avatar"
-                      />
-                      <span className="text-sm text-gray-500">typing...</span>
-                    </div>
-                    <div ref={scrollRef}></div>
-                  </>
                 )}
               </div>
 
