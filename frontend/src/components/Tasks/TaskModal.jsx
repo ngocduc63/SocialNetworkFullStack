@@ -40,7 +40,7 @@ export default function TaskModal({ open, onClose, task }) {
   };
 
   const handleSaveTask = () => {
-    if (!formData.content.trim()) return;
+    if (!formData.title.trim()) return;
     if (formData.users.length === 0) formData.users = [currentUser];
 
     if (task) {
@@ -58,7 +58,7 @@ export default function TaskModal({ open, onClose, task }) {
         id: Date.now(),
         title: formData.title.trim(),
         content: formData.content.trim(),
-        users: formData.users.map((user) => user._id),
+        users: formData.users.map((user) => user._id || user.id),
         time: formData.time || "Không thời hạn",
         assigner: currentUser.id,
         done: false,
@@ -71,7 +71,7 @@ export default function TaskModal({ open, onClose, task }) {
     onClose();
   };
 
-  const isDisabled = !formData.content.trim();
+  const isDisabled = !formData.title.trim();
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,7 +110,9 @@ export default function TaskModal({ open, onClose, task }) {
       <div className="border-t pt-2 flex flex-col space-y-3 2xl:mt-0">
         {/* Tiêu đề */}
         <div>
-          <p className="text-base font-semibold mb-1">Tiêu đề</p>
+          <p className="text-base font-semibold mb-1">
+            Tiêu đề <span className={"text-red-500"}>*</span>
+          </p>
           <Input
             name="title"
             placeholder="Nhập tiêu đề VD: Chuẩn bị báo cáo"
