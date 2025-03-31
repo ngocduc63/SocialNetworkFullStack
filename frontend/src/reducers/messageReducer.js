@@ -35,7 +35,11 @@ export const allMessagesReducer = (
     case ALL_MESSAGES_ADD:
       return {
         ...state,
-        messages: [...state.messages, payload],
+        messages: state.messages.some(
+          (msg) => msg.createdAt === payload.createdAt,
+        )
+          ? state.messages
+          : [...state.messages, payload],
       };
     case ALL_MESSAGES_DELETE:
       return {

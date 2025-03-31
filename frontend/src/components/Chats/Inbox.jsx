@@ -18,7 +18,6 @@ import { getUserDetailsById } from "../../actions/userAction";
 import {
   ALL_MESSAGES_ADD,
   ALL_MESSAGES_DELETE,
-  NEW_MESSAGE_RESET,
 } from "../../constants/messageConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
 import Sidebar from "./Sidebar";
@@ -72,16 +71,10 @@ const Inbox = () => {
     if (!socket || !loggedInUser || !chatId) return;
     socket.current.emit("joinRoom", `chat_${chatId}`);
     socket.current.on("receiveMessage", (data) => {
-      const senderId = data.senderId;
-      if (senderId !== loggedInUser._id) {
-        dispatch({
-          type: ALL_MESSAGES_ADD,
-          payload: {
-            ...data,
-            createdAt: Date.now(),
-          },
-        });
-      }
+      dispatch({
+        type: ALL_MESSAGES_ADD,
+        payload: data,
+      });
     });
     socket.current.on("receiveDeleteMessage", (data) => {
       const { senderId, messId } = data;
@@ -121,26 +114,17 @@ const Inbox = () => {
     };
   }, [dispatch, error, params.chatId, userId]);
 
-  useEffect(() => {
-    if (success) {
-      dispatch({
-        type: ALL_MESSAGES_ADD,
-        payload: newMessage,
-      });
-      dispatch({ type: NEW_MESSAGE_RESET });
-    }
-  }, [dispatch, success]);
-
   const handleSubmit = useCallback(
     (e, msg = message) => {
       e.preventDefault();
 
       socket?.current.emit("sendMessage", {
         chatId: chatId,
-        senderId: loggedInUser._id,
-        receiverId: userId,
+        sender: loggedInUser._id,
+        receiver: userId,
         content: msg,
         idReply: messReply,
+        createdAt: Date.now(),
       });
 
       const msgData = {

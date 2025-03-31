@@ -140,7 +140,8 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     console.log(`User ${socket.id} joined room ${roomId}`);
   });
-  socket.on("sendMessage", ({ chatId, ...data }) => {
+  socket.on("sendMessage", (data) => {
+    const chatId = data.chatId;
     io.to(`chat_${chatId}`).emit("receiveMessage", data);
     console.log(`Message sent to room ${chatId}:`, data);
   });
