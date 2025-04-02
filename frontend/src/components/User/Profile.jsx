@@ -9,8 +9,8 @@ import {
   getUserDetails,
 } from "../../actions/userAction";
 import {
-  clearErrors as clearChatErrors,
   addNewChat,
+  clearErrors as clearChatErrors,
 } from "../../actions/chatAction";
 import { toast } from "react-toastify";
 import BackdropLoader from "../Layouts/BackdropLoader";
@@ -24,10 +24,7 @@ import {
   settingsIcon,
   taggedIcon,
 } from "./SvgIcons";
-import {
-  FOLLOW_USER_RESET,
-  USER_DETAILS_RESET,
-} from "../../constants/userConstants";
+import { FOLLOW_USER_RESET } from "../../constants/userConstants";
 import UsersDialog from "../Layouts/UsersDialog";
 import { NEW_CHAT_RESET } from "../../constants/chatConstants";
 import MetaData from "../Layouts/MetaData";
@@ -119,7 +116,7 @@ const Profile = () => {
   return (
     <>
       <MetaData
-        title={`${user?.name} (@${user?.username}) • Instagram photos and videos`}
+        title={`${user?.name} (@${user?.username}) • Pollux photos and videos`}
       />
 
       {loading && <BackdropLoader />}
@@ -209,7 +206,7 @@ const Profile = () => {
                   <a
                     href={user.website}
                     target="_blank"
-                    className="text-blue-900 font-medium"
+                    className="text-blue-900 font-medium" rel="noreferrer"
                   >
                     {new URL(user.website).hostname}
                   </a>

@@ -49,6 +49,7 @@ export const allMessagesReducer = (
             return {
               ...msg,
               content: "Tin nhắn đã bị xóa",
+              isPostShare: false, // Đặt lại isPostShare thành false khi xóa
             };
           } else if (msg?.idReply && msg.idReply._id === payload.messId) {
             return {

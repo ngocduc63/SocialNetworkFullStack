@@ -7,7 +7,6 @@ import {
   loadUser,
   updateProfile,
 } from "../../../actions/userAction";
-import profile from "../../../assests/images/hero.png";
 import { UPDATE_PROFILE_RESET } from "../../../constants/userConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../../utils/constants";
 import MetaData from "../../Layouts/MetaData";
@@ -86,7 +85,7 @@ const UpdateProfile = () => {
 
   return (
     <>
-      <MetaData title="Edit Profile • Instagram" />
+      <MetaData title="Edit Profile • Pollux" />
 
       <form
         onSubmit={handleUpdate}

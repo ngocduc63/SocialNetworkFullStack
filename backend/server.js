@@ -77,21 +77,6 @@ io.on("connection", (socket) => {
       // Don't send notification if liker is post owner
       if (data.likerId && postOwnerId.toString() !== data.likerId.toString()) {
         const ownerSocketId = userSockets[postOwnerId.toString()];
-
-        if (ownerSocketId) {
-          // Send notification to post owner using the new model structure
-          io.to(ownerSocketId).emit("newNotification", {
-            type: "like",
-            sender: data.likerId,
-            recipient: postOwnerId,
-            post: data.post._id,
-            text: `${data.likerName || "Someone"} liked your post`,
-            read: false,
-            createdAt: new Date(),
-          });
-
-          console.log(`Sent like notification to post owner ${postOwnerId}`);
-        }
       }
     }
   });
@@ -102,37 +87,6 @@ io.on("connection", (socket) => {
 
     // Broadcast UI update
     io.emit("updatePost", { data, action: "comment" });
-
-    // Handle notification
-    // if (data && data.post && data.post.postedBy && data.commenterId) {
-    //   const postOwnerId =
-    //     typeof data.post.postedBy === "object"
-    //       ? data.post.postedBy._id.toString()
-    //       : data.post.postedBy.toString();
-    //
-    //   const commenterId = data.commenterId.toString();
-    //
-    //   // Don't send notification if commenter is post owner
-    //   if (postOwnerId !== commenterId) {
-    //     const ownerSocketId = userSockets[postOwnerId];
-    //
-    //     if (ownerSocketId) {
-    //       // Send notification to post owner
-    //       io.to(ownerSocketId).emit("newNotification", {
-    //         type: "comment",
-    //         sender: commenterId,
-    //         recipient: postOwnerId,
-    //         post: data.post._id,
-    //         comment: data.comment ? data.comment._id : null,
-    //         text: `${data.commenterName || "Someone"} commented on your post`,
-    //         read: false,
-    //         createdAt: new Date(),
-    //       });
-    //
-    //       console.log(`Sent comment notification to post owner ${postOwnerId}`);
-    //     }
-    //   }
-    // }
   });
 
   // Xử lý chat message
@@ -149,19 +103,6 @@ io.on("connection", (socket) => {
     io.to(`chat_${chatId}`).emit("receiveDeleteMessage", data);
     console.log(`receiveDeleteMessage sent to room ${chatId}:`, data);
   });
-  // socket.on("sendMessage", ({ senderId, receiverId, content, idReply }) => {
-  //   console.log(`Message from ${senderId} to ${receiverId}`);
-  //
-  //   const receiverSocketId = userSockets[receiverId];
-  //
-  //   if (receiverSocketId) {
-  //     io.to(receiverSocketId).emit("getMessage", {
-  //       senderId,
-  //       content,
-  //       idReply,
-  //     });
-  //   }
-  // });
 
   // Xử lý typing states
   socket.on("typing", ({ senderId, receiverId }) => {
@@ -254,6 +195,33 @@ io.on("connection", (socket) => {
       }
     },
   );
+  // Xử lý share post
+  socket.on("sharePost", (data) => {
+    console.log("Received sharePost event:", data);
+
+    if (data && data.recipientId) {
+      const recipientSocketId = userSockets[data.recipientId];
+
+      if (recipientSocketId) {
+        // Gửi sự kiện receivePostShare đến người nhận
+        io.to(recipientSocketId).emit("receivePostShare", {
+          senderId: data.senderId,
+          senderName: data.senderName,
+          postId: data.postId,
+          postImage: data.postImage,
+          postCaption: data.postCaption,
+          postOwnerUsername: data.postOwnerUsername,
+          message: data.message || "Đã chia sẻ một bài viết với bạn",
+        });
+
+        console.log(
+          `Đã gửi thông báo chia sẻ bài viết đến ${data.recipientId}`,
+        );
+      } else {
+        console.log(`Người dùng ${data.recipientId} không online`);
+      }
+    }
+  });
 
   // Xử lý disconnect
   socket.on("disconnect", () => {
