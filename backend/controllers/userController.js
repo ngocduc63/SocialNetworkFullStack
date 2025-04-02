@@ -190,7 +190,9 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
   if (req.body.avatar !== "") {
     const user = await User.findById(req.user._id);
 
-    await deleteFile("profiles/", user.avatar);
+    if (user.avatar !== "hero.png") {
+      await deleteFile("profiles/", user.avatar);
+    }
     newUserData.avatar = req.file.filename;
   }
 
