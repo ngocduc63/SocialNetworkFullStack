@@ -81,7 +81,9 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
+    const sendEmail = require("./utils/sendMailTrap");
     const sendCookie = require("./utils/sendCookieLoginGoogle");
+    sendEmail(req.user.email);
     sendCookie(req.user, 200, res);
     res.redirect(`http://localhost:3000/`);
   },
