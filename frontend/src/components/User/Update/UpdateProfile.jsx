@@ -7,7 +7,6 @@ import {
   loadUser,
   updateProfile,
 } from "../../../actions/userAction";
-import profile from "../../../assests/images/hero.png";
 import { UPDATE_PROFILE_RESET } from "../../../constants/userConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../../utils/constants";
 import MetaData from "../../Layouts/MetaData";
@@ -178,6 +177,7 @@ const UpdateProfile = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            readOnly
           />
         </div>
         <button

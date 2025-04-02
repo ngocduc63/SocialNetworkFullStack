@@ -9,8 +9,8 @@ import {
   getUserDetails,
 } from "../../actions/userAction";
 import {
-  clearErrors as clearChatErrors,
   addNewChat,
+  clearErrors as clearChatErrors,
 } from "../../actions/chatAction";
 import { toast } from "react-toastify";
 import BackdropLoader from "../Layouts/BackdropLoader";
@@ -24,10 +24,7 @@ import {
   settingsIcon,
   taggedIcon,
 } from "./SvgIcons";
-import {
-  FOLLOW_USER_RESET,
-  USER_DETAILS_RESET,
-} from "../../constants/userConstants";
+import { FOLLOW_USER_RESET } from "../../constants/userConstants";
 import UsersDialog from "../Layouts/UsersDialog";
 import { NEW_CHAT_RESET } from "../../constants/chatConstants";
 import MetaData from "../Layouts/MetaData";
@@ -57,6 +54,11 @@ const Profile = () => {
     // setFollow(!follow);
     dispatch(followUser(user._id));
   };
+
+  useEffect(() => {
+    setFollowersModal(false);
+    setViewModal(false);
+  }, [user]);
 
   const handleFollowersModal = () => {
     setFollowersModal(true);
