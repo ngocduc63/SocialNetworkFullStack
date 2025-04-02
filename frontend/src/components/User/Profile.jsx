@@ -55,6 +55,11 @@ const Profile = () => {
     dispatch(followUser(user._id));
   };
 
+  useEffect(() => {
+    setFollowersModal(false);
+    setViewModal(false);
+  }, [user]);
+
   const handleFollowersModal = () => {
     setFollowersModal(true);
     setViewModal(true);

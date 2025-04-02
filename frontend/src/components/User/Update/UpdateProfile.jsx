@@ -177,6 +177,7 @@ const UpdateProfile = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            readOnly
           />
         </div>
         <button
