@@ -245,11 +245,11 @@ const Message = ({
     </div>
   ) : (
     <div className="flex justify-start items-end gap-2 w-full mb-2">
-      <Tooltip title={friend.name}>
+      <Tooltip title={friend?.name ?? "Người dùng không tồn tại"}>
         <img
           draggable="false"
           className="w-7 h-7 rounded-full object-cover"
-          src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+          src={BASE_PROFILE_IMAGE_URL + (friend?.avatar ?? "hero.png")}
           alt="avatar"
         />
       </Tooltip>
