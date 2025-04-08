@@ -119,18 +119,47 @@ const Notifications = () => {
   }, [socket, dispatch, open]);
 
   const getRedirectUrl = (notification) => {
+    // Nếu đã có URL được định nghĩa trước, sử dụng nó
     if (notification.redirectUrl) {
       return notification.redirectUrl;
     }
 
-    if (notification.post) {
-      return `/post/${notification.post}`;
+    // Kiểm tra và chuyển đổi post ID nếu cần
+    let postId = notification.post;
+    if (postId && typeof postId === "object" && postId._id) {
+      postId = postId._id;
+    } else if (postId && typeof postId === "object") {
+      postId = String(postId);
+    }
+
+    // Kiểm tra và xử lý theo type của thông báo
+    if (notification.type === "like") {
+      // Nếu thông báo like liên quan đến comment
+      if (notification.comment) {
+        // Chuyển đến bài đăng với focus đến comment được like
+        return `/post/${postId}?comment=${notification.comment}`;
+      }
+      // Nếu thông báo like liên quan đến bài đăng
+      else if (postId) {
+        // Chuyển đến bài đăng được like
+        return `/post/${postId}`;
+      }
+    }
+
+    // Xử lý các loại thông báo khác
+    if (postId) {
+      return `/post/${postId}`;
     }
 
     if (notification.type === "follow") {
       return `/${notification.sender?.username || ""}`;
     }
 
+    if (notification.comment && notification.post) {
+      return `/post/${notification.post}?comment=${notification.comment}`;
+    }
+
+    // Trả về trang chủ nếu không có thông tin khác
     return "/";
   };
 
@@ -160,8 +189,23 @@ const Notifications = () => {
       // Đóng dropdown thông báo
       setOpen(false);
 
-      // Chuyển hướng đến URL sử dụng React Router
-      navigate(getRedirectUrl(notification));
+      // Lấy URL đích cơ bản
+      let redirectUrl = getRedirectUrl(notification);
+
+      // Thêm tham số query cho thông báo like
+      if (
+        notification.type === "like" &&
+        notification.post &&
+        !notification.comment
+      ) {
+        // Nếu là like post thì thêm tham số action=like để highlight phần like
+        redirectUrl = `${redirectUrl}?action=like`;
+      }
+
+      // Chuyển hướng đến URL
+      navigate(redirectUrl);
+
+      console.log("Chuyển hướng đến:", redirectUrl);
     } catch (error) {
       console.error("Error marking notification as read:", error);
       showNotification(
@@ -171,7 +215,6 @@ const Notifications = () => {
       );
     }
   };
-
   const handleMarkAllAsRead = () => {
     // Cập nhật UI ngay lập tức
     setLocalUnreadCount(0);
@@ -260,17 +303,16 @@ const Notifications = () => {
               </span>{" "}
               <span className="text-gray-600">
                 {notification.type === "like"
-                  ? "đã thích "
+                  ? notification.comment
+                    ? "đã thích bình luận của bạn trong "
+                    : "đã thích bài viết của bạn"
                   : notification.type === "comment"
-                    ? "đã bình luận về "
+                    ? "đã bình luận về bài viết của bạn"
                     : notification.type === "reply"
-                      ? "đã trả lời bình luận của bạn trên "
+                      ? "đã trả lời bình luận của bạn"
                       : notification.type === "follow"
-                        ? "đã theo dõi "
-                        : "đã tương tác với "}
-                {notification.comment
-                  ? "bình luận của bạn"
-                  : "bài viết của bạn"}
+                        ? "đã theo dõi bạn"
+                        : "đã tương tác với bạn"}
               </span>
             </p>
           </div>
@@ -366,7 +408,7 @@ const Notifications = () => {
   };
 
   const NotificationPopup = () => (
-    <div className="fixed right-0 sm:absolute sm:right-0 top-10 w-full sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 max-h-screen overflow-hidden z-50">
+    <div className="fixed right-0 sm:absolute sm:right-0 top-2 w-full sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 max-h-screen overflow-hidden z-50">
       <div className="absolute right-5 -top-2 rotate-45 h-4 w-4 bg-white rounded-sm border-l border-t hidden sm:block"></div>
 
       {/* Header with tabs */}

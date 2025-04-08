@@ -121,7 +121,7 @@ const Profile = () => {
   return (
     <>
       <MetaData
-        title={`${user?.name} (@${user?.username}) • Instagram photos and videos`}
+        title={`${user?.name} (@${user?.username}) • Pollux photos and videos`}
       />
 
       {loading && <BackdropLoader />}
@@ -211,7 +211,7 @@ const Profile = () => {
                   <a
                     href={user.website}
                     target="_blank"
-                    className="text-blue-900 font-medium"
+                    className="text-blue-900 font-medium" rel="noreferrer"
                   >
                     {new URL(user.website).hostname}
                   </a>

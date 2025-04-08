@@ -20,6 +20,14 @@ const messageSchema = new mongoose.Schema(
       ref: "Message",
       default: null,
     },
+    isPostShare: {
+      type: Boolean,
+      default: false,
+    },
+    sharedPost: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
+    },
   },
   { timestamps: true },
 );

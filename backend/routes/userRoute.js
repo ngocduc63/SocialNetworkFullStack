@@ -14,6 +14,7 @@ const {
   searchUsers,
   getUserDetailsById,
   deleteProfile,
+  getUserFollowing,
 } = require("../controllers/userController");
 const { isAuthenticated } = require("../middlewares/auth");
 const path = require("path");
@@ -42,7 +43,7 @@ const avatarUpload = multer({
 router.route("/signup").post(avatarUpload.single("avatar"), signupUser);
 router.route("/login").post(loginUser);
 router.route("/logout").get(logoutUser);
-
+router.route("/user/following").get(isAuthenticated, getUserFollowing);
 router
   .route("/me")
   .get(isAuthenticated, getAccountDetails)

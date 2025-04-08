@@ -374,30 +374,19 @@ exports.searchUsers = catchAsync(async (req, res, next) => {
   }
 });
 
-// User Search -- Atlas Search
-// exports.searchUsers = catchAsync(async (req, res, next) => {
+// Lấy danh sách người dùng mà người dùng hiện tại đang follow
+exports.getUserFollowing = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.user._id).populate(
+    "following",
+    "username name avatar",
+  );
 
-//     if (req.query.keyword) {
-//         const users = await User.aggregate(
-//             [
-//                 {
-//                     $search: {
-//                         index: 'usersearch',
-//                         text: {
-//                             query: req.query.keyword,
-//                             path: ['name', 'username'],
-//                             fuzzy: {
-//                                 maxEdits: 2.0
-//                             }
-//                         }
-//                     }
-//                 }
-//             ]
-//         )
+  if (!user) {
+    return next(new ErrorHandler("User not found", 404));
+  }
 
-//         res.status(200).json({
-//             success: true,
-//             users,
-//         });
-//     }
-// });
+  res.status(200).json({
+    success: true,
+    users: user.following,
+  });
+});

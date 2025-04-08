@@ -681,9 +681,26 @@ exports.saveUnsavePost = catchAsync(async (req, res, next) => {
   }
 });
 
-// Get Post Details
 exports.getPostDetails = catchAsync(async (req, res, next) => {
-  const post = await Post.findById(req.params.id)
+  console.log("getPostDetails được gọi với ID:", req.params.id);
+  console.log("User requesting:", req.user?._id);
+
+  // Chuyển đổi tham số id thành chuỗi nếu là đối tượng
+  let postId = req.params.id;
+  if (typeof postId === "object") {
+    if (postId._id) {
+      postId = postId._id.toString();
+    } else {
+      postId = String(postId);
+    }
+  }
+
+  // Kiểm tra ID có hợp lệ không
+  if (!mongoose.isValidObjectId(postId)) {
+    return next(new ErrorHandler("Resource Not Found. Invalid: _id", 400));
+  }
+
+  const post = await Post.findById(postId)
     .populate("postedBy likes")
     .populate({
       path: "comments",
@@ -701,7 +718,6 @@ exports.getPostDetails = catchAsync(async (req, res, next) => {
     post,
   });
 });
-
 // Get All Posts
 exports.allPosts = catchAsync(async (req, res, next) => {
   const posts = await Post.find();

@@ -1,7 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { deletePost, likePost, savePost } from "../../actions/postAction";
+import { toast } from "react-toastify";
 import {
   BASE_POST_IMAGE_URL,
   BASE_PROFILE_IMAGE_URL,
@@ -31,7 +32,6 @@ const CommentItem = ({
   onReplySubmit,
   onCommentDeleted,
 }) => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { socket } = useContext(AppContext);
 
@@ -120,7 +120,6 @@ const CommentItem = ({
       loadChildComments();
     }
   };
-
   // Hàm xử lý thích/bỏ thích bình luận
   const handleLikeComment = async () => {
     try {
@@ -181,7 +180,11 @@ const CommentItem = ({
   const canDelete = user._id === comment.comment_userId._id;
 
   return (
+    // <div
+    //   className={`mb-3 ${level > 0 ? "border-l-2 border-gray-200 pl-4 ml-4" : ""}`}
+    // >
     <div
+      id={`comment-${comment._id}`}
       className={`mb-3 ${level > 0 ? "border-l-2 border-gray-200 pl-4 ml-4" : ""}`}
     >
       <div className="flex items-start space-x-2">
@@ -352,6 +355,7 @@ const PostItem = ({
   setUsersDialog,
   setUsersList,
 }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const commentInput = useRef(null);
 
@@ -370,8 +374,56 @@ const PostItem = ({
   const [commentsLoading, setCommentsLoading] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [editModal, setEditModal] = useState(false);
+  const [newCaption, setNewCaption] = useState(caption);
   const [likeEffect, setLikeEffect] = useState(false);
+  const [shareModal, setShareModal] = useState(false);
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSharing, setIsSharing] = useState(false);
+
+  // Lấy thông tin từ URL
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const focusedCommentId = queryParams.get("comment");
+  const action = queryParams.get("action");
+  const [highlightLike, setHighlightLike] = useState(false);
+
+  // Xử lý tham số từ thông báo
+  useEffect(() => {
+    // Xử lý highlight like nếu là thông báo like bài đăng
+    if (action === "like") {
+      setHighlightLike(true);
+      // Highlight trong 3 giây rồi trở về bình thường
+      setTimeout(() => {
+        setHighlightLike(false);
+      }, 3000);
+    }
+
+    // Xử lý khi có comment id cần focus
+    if (focusedCommentId) {
+      setViewComment(true);
+
+      // Đợi bình luận được tải
+      setTimeout(() => {
+        loadComments().then(() => {
+          setTimeout(() => {
+            const commentElement = document.getElementById(
+              `comment-${focusedCommentId}`,
+            );
+            if (commentElement) {
+              commentElement.scrollIntoView({ behavior: "smooth" });
+              // Thêm class highlight tạm thời
+              commentElement.classList.add("bg-blue-50");
+              setTimeout(() => {
+                commentElement.classList.remove("bg-blue-50");
+              }, 3000);
+            }
+          }, 500);
+        });
+      }, 500);
+    }
+  }, [focusedCommentId, action]);
 
   // Kiểm tra kết nối socket khi component mount
   useEffect(() => {
@@ -432,14 +484,16 @@ const PostItem = ({
         });
 
         setHierarchicalComments(uniqueComments);
+        return true; // Thêm dòng này để trả về true khi tải thành công
       }
+      return false; // Thêm dòng này để trả về false khi tải không thành công
     } catch (error) {
       console.error("Lỗi khi tải bình luận:", error);
+      return false; // Thêm dòng này để trả về false khi có lỗi
     } finally {
       setCommentsLoading(false);
     }
   };
-
   // Xử lý khi một bình luận bị xóa
   const handleCommentDeleted = (commentId) => {
     console.log("Bình luận đã bị xóa:", commentId);
@@ -480,7 +534,60 @@ const PostItem = ({
       socket.current.off("updatePost", handlePostUpdate);
     };
   }, [socket, viewComment, _id]);
+  // Thêm hàm này vào các hàm xử lý
+  const fetchFollowingUsers = async () => {
+    try {
+      const response = await axios.get("/api/v1/user/following");
+      if (response.data.success) {
+        setFollowingUsers(response.data.users);
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách người dùng đang follow:", error);
+      toast.error("Không thể tải danh sách người dùng");
+    }
+  };
+  const handleSharePost = () => {
+    // Mở modal share thay vì chuyển hướng
+    setShareModal(true);
+    // Lấy danh sách người dùng đang follow
+    fetchFollowingUsers();
+  };
+  const handleShareToUser = async (recipientId, recipientUsername) => {
+    setIsSharing(true);
+    try {
+      // Gọi API để chia sẻ bài viết
+      const response = await axios.post("/api/v1/message/share-post", {
+        postId: _id,
+        recipientId: recipientId,
+        message: `Đã chia sẻ một bài viết với bạn`,
+      });
 
+      if (response.data.success) {
+        toast.success(`Đã chia sẻ bài viết với ${recipientUsername}`);
+        setShareModal(false);
+
+        // Gửi thông báo qua socket để làm real-time
+        if (socket?.current && socket.current.connected) {
+          socket.current.emit("sharePost", {
+            senderId: user._id,
+            senderName: user.username || user.name,
+            recipientId: recipientId,
+            postId: _id,
+            postImage: image,
+            postCaption: caption,
+            postOwnerUsername: postedBy.username,
+            message: `Đã chia sẻ một bài viết với bạn`,
+          });
+          console.log("Đã gửi sự kiện sharePost qua socket");
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi chia sẻ bài viết:", error);
+      toast.error("Có lỗi xảy ra khi chia sẻ bài viết");
+    } finally {
+      setIsSharing(false);
+    }
+  };
   // Xử lý like/unlike bài đăng
   const handleLike = async () => {
     const wasLiked = liked; // Lưu trạng thái trước khi cập nhật UI
@@ -676,6 +783,27 @@ const PostItem = ({
     setDeleteModal(false);
   };
 
+  const handleEditPost = async () => {
+    try {
+      const response = await axios.put(`/api/v1/post/${_id}`, {
+        caption: newCaption,
+      });
+
+      if (response.data.success) {
+        toast.success("Cập nhật bài viết thành công!");
+        setEditModal(false);
+        setDeleteModal(false);
+        // Cập nhật caption hiển thị trên UI
+        // Bạn có thể reload trang hoặc cập nhật state caption trong component
+        window.location.reload();
+        // Hoặc cách tốt hơn là dispatch một action để cập nhật state Redux
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật bài viết:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật bài viết");
+    }
+  };
+
   const setLike = () => {
     setLikeEffect(true);
     setTimeout(() => {
@@ -726,12 +854,24 @@ const PostItem = ({
         <Dialog open={deleteModal} onClose={closeDeleteModal} maxWidth="xl">
           <div className="flex flex-col items-center w-80">
             {postedBy._id === user._id && (
-              <button
-                onClick={handleDeletePost}
-                className="text-red-600 font-medium border-b py-2.5 w-full hover:bg-red-50"
-              >
-                Xóa
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    setEditModal(true);
+                    setDeleteModal(false);
+                    setNewCaption(caption); // Đảm bảo newCaption được cập nhật với giá trị hiện tại
+                  }}
+                  className="text-black font-medium border-b py-2.5 w-full hover:bg-gray-50"
+                >
+                  Chỉnh sửa
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  className="text-red-600 font-medium border-b py-2.5 w-full hover:bg-red-50"
+                >
+                  Xóa
+                </button>
+              </>
             )}
             <button
               onClick={closeDeleteModal}
@@ -739,6 +879,116 @@ const PostItem = ({
             >
               Hủy
             </button>
+          </div>
+        </Dialog>
+        {/* Dialog chỉnh sửa bài viết */}
+        <Dialog
+          open={editModal}
+          onClose={() => setEditModal(false)}
+          maxWidth="xl"
+        >
+          <div className="flex flex-col p-4 w-80">
+            <h3 className="text-xl font-medium mb-4">Chỉnh sửa bài viết</h3>
+            <textarea
+              className="w-full border rounded p-2 mb-4 resize-none"
+              rows="4"
+              value={newCaption}
+              onChange={(e) => setNewCaption(e.target.value)}
+              placeholder="Nhập nội dung mới..."
+            />
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setEditModal(false)}
+                className="px-4 py-2 border rounded hover:bg-gray-100"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleEditPost}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </Dialog>
+
+        {/* Dialog chia sẻ bài viết */}
+        <Dialog
+          open={shareModal}
+          onClose={() => setShareModal(false)}
+          maxWidth="xs"
+        >
+          <div className="flex flex-col p-4 w-80">
+            <h3 className="text-xl font-medium mb-4">Chia sẻ bài viết</h3>
+
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Tìm kiếm người dùng..."
+                className="w-full border rounded p-2"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className="max-h-60 overflow-y-auto">
+              {followingUsers.length > 0 ? (
+                followingUsers
+                  .filter(
+                    (u) =>
+                      u.username
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                      (u.name &&
+                        u.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())),
+                  )
+                  .map((user) => (
+                    <div
+                      key={user._id}
+                      className="flex items-center justify-between py-2 border-b hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleShareToUser(user._id, user.username)}
+                    >
+                      <div className="flex items-center">
+                        <img
+                          src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                          alt={user.username}
+                          className="w-10 h-10 rounded-full object-cover mr-3"
+                        />
+                        <div>
+                          <div className="font-semibold">{user.username}</div>
+                          {user.name && (
+                            <div className="text-sm text-gray-500">
+                              {user.name}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        className="text-primary-blue font-semibold text-sm"
+                        disabled={isSharing}
+                      >
+                        Gửi
+                      </button>
+                    </div>
+                  ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  {searchTerm ? "Không tìm thấy người dùng" : "Đang tải..."}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setShareModal(false)}
+                className="px-4 py-2 text-gray-700 border rounded hover:bg-gray-100"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         </Dialog>
       </div>
@@ -777,7 +1027,7 @@ const PostItem = ({
             <button onClick={() => commentInput.current.focus()}>
               {commentIcon}
             </button>
-            {shareIcon}
+            <button onClick={handleSharePost}>{shareIcon}</button>
           </div>
           <button onClick={handleSave}>
             {saved ? saveIconFill : saveIconOutline}
