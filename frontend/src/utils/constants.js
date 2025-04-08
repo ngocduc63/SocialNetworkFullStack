@@ -3,6 +3,9 @@ export const BASE_PROFILE_IMAGE_URL =
 export const BASE_POST_IMAGE_URL =
   "http://localhost:4000/public/uploads/posts/";
 
+export const BASE_MESS_IMAGE_URL =
+  "http://localhost:4000/public/uploads/messages/";
+
 export const SOCKET_ENDPOINT = "http://localhost:4000";
 
 // export const BASE_PROFILE_IMAGE_URL = 'https://instagrammern.herokuapp.com/public/uploads/profiles/';

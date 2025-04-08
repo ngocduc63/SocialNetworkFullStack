@@ -4,9 +4,36 @@ const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
 const Post = require("../models/postModel");
 const ErrorHandler = require("../utils/errorHandler");
+
 // Send New Message
 exports.newMessage = catchAsync(async (req, res, next) => {
   const { chatId, content, idReply = null } = req.body;
+
+  const images =
+    req.files && req.files.length > 0
+      ? req.files.map((file) => file.filename)
+      : [];
+  if (images.length > 0) {
+    const message = await Message.create({
+      content: `Đã gửi ${images.length} ảnh`,
+      chatId,
+      sender: req.user._id,
+      images,
+      type: "image",
+      idReply: idReply?._id ?? null,
+    });
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
+
+    const rsMess = {
+      ...message.toObject(),
+      idReply: idReply ? { _id: idReply._id, content: idReply.content } : null,
+    };
+
+    return res.status(200).json({
+      success: true,
+      newMessage: rsMess,
+    });
+  }
 
   const msgData = {
     sender: req.user._id,
@@ -23,7 +50,7 @@ exports.newMessage = catchAsync(async (req, res, next) => {
     idReply: idReply ? { _id: idReply._id, content: idReply.content } : null,
   };
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     newMessage: rsMess,
   });
@@ -41,11 +68,12 @@ exports.deleteMessage = catchAsync(async (req, res, next) => {
   }
 
   message.content = "Tin nhắn đã bị xóa";
+  message.isDelete = true;
   await message.save();
 
   res.status(200).json({
     success: true,
-    message: "Tin nhắn đã được cập nhật thành 'Tin nhắn đã bị xóa'",
+    message: "Xóa thành công",
   });
 });
 
@@ -100,7 +128,7 @@ exports.sharePost = catchAsync(async (req, res, next) => {
     const newMessage = await Message.create({
       sender: req.user._id,
       chatId: chat._id, // Đổi từ chat thành chatId
-      content: message || "Đã chia sẻ một bài viết với bạn",
+      content: message || "Đã chia sẻ một bài viết",
       isPostShare: true,
       sharedPost: postId,
     });

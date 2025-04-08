@@ -11,6 +11,10 @@ const chatSchema = new mongoose.Schema(
     name: {
       type: String,
     },
+    isGroup: {
+      type: Boolean,
+      default: false,
+    },
     avatar: {
       type: String,
     },
