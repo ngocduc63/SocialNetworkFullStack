@@ -22,16 +22,15 @@ import {
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
 import Sidebar from "./Sidebar";
 import Message from "./Message";
-import { Picker } from "emoji-mart";
 import SearchModal from "./SearchModal";
 import SpinLoader from "../Layouts/SpinLoader";
 import MetaData from "../Layouts/MetaData";
 import { USER_DETAILS_RESET } from "../../constants/userConstants";
 import { AppContext } from "../../context/AppContext";
-import { IconAddImage, IconDetailChat, IconLike } from "./SvgIcon";
+import { IconDetailChat } from "./SvgIcon";
 import { CloseOutlined } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
 import ChatDetailModal from "./ChatDetailModal";
+import ChatForm from "./ChatForm";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -115,25 +114,34 @@ const Inbox = () => {
   }, [dispatch, error, params.chatId, userId]);
 
   const handleSubmit = useCallback(
-    (e, msg = message) => {
-      e.preventDefault();
+    ({ mess = message, fileList = [] }) => {
+      const formData = new FormData();
+      formData.append("chatId", params.chatId);
+      formData.append("content", fileList?.length > 0 ? "Đã gửi ảnh" : mess);
+      if (messReply) formData.append("idReply", messReply);
 
-      socket?.current.emit("sendMessage", {
-        chatId: chatId,
-        sender: loggedInUser._id,
-        receiver: userId,
-        content: msg,
-        idReply: messReply,
-        createdAt: Date.now(),
+      fileList?.forEach((file, index) => {
+        formData.append(`images`, file.originFileObj);
       });
 
-      const msgData = {
-        chatId: params.chatId,
-        content: msg,
-        idReply: messReply,
-      };
+      const images = fileList?.map((file, index) => {
+        return file.name;
+      });
 
-      dispatch(sendMessage(msgData)).then(() => setMessage(""));
+      dispatch(sendMessage(formData)).then((data) => {
+        socket?.current.emit("sendMessage", {
+          _id: data.newMessage?._id,
+          chatId: chatId,
+          sender: loggedInUser._id,
+          receiver: userId,
+          content: fileList?.length > 0 ? "Đã gửi ảnh" : mess,
+          idReply: messReply,
+          images: data.newMessage.images,
+          type: fileList?.length > 0 ? "image" : mess,
+          createdAt: Date.now(),
+        });
+        setMessage("");
+      });
       if (messReply) {
         handleSetReply();
       }
@@ -191,6 +199,7 @@ const Inbox = () => {
           chatId: chatId,
           messId,
           senderId,
+          isDelete: true,
         });
       }
     },
@@ -341,60 +350,10 @@ const Inbox = () => {
               )}
 
               {/* message input */}
-              <form
-                onSubmit={handleSubmit}
-                className="flex items-center gap-3 justify-between border rounded-full py-2.5 px-4 mx-5 mb-5 relative"
-              >
-                <span
-                  onClick={() => setShowEmojis(!showEmojis)}
-                  className="cursor-pointer hover:opacity-60"
-                >
-                  <svg
-                    aria-label="Emoji"
-                    color="#262626"
-                    fill="#262626"
-                    height="24"
-                    role="img"
-                    viewBox="0 0 24 24"
-                    width="24"
-                  >
-                    <path d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"></path>
-                  </svg>
-                </span>
-
-                {showEmojis && (
-                  <div className="absolute bottom-14 -left-10">
-                    <Picker
-                      set="google"
-                      onSelect={(e) => setMessage(message + e.native)}
-                      title="Emojis"
-                    />
-                  </div>
-                )}
-                <TextArea
-                  ref={inputRef}
-                  className="flex-1 outline-none text-sm scrollbar"
-                  value={message}
-                  onChange={handleTyping}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Message..."
-                  autoSize={{ minRows: 1, maxRows: 3 }}
-                  onFocus={() => setShowEmojis(false)}
-                />
-                {isReply || message.trim().length > 0 ? (
-                  <button className="text-primary-blue font-medium text-sm">
-                    Send
-                  </button>
-                ) : (
-                  <>
-                    <IconAddImage />
-                    <IconLike
-                      className="cursor-pointer"
-                      handleSubmit={handleSubmit}
-                    />
-                  </>
-                )}
-              </form>
+              <ChatForm
+                handleSubmit={handleSubmit}
+                handleKeyDown={handleKeyDown}
+              />
             </div>
           )}
         </div>

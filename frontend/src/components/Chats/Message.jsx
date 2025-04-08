@@ -7,6 +7,7 @@ import { useState } from "react";
 import { ReplyIcon } from "./SvgIcon";
 import { Modal, Tooltip } from "antd";
 import { useNavigate } from "react-router-dom";
+import MessageContent from "./MessageContent";
 
 const IconContainer = ({ children, onClick }) => {
   return (
@@ -152,7 +153,7 @@ const Message = ({
   handleDeleteMessage,
 }) => {
   const navigate = useNavigate();
-  const checkIsDelete = message.content === "Tin nhắn đã bị xóa";
+  const checkIsDelete = message?.isDelete;
   // const isPostShare = message.isPostShare && message.sharedPost;
   const isPostShare =
     !checkIsDelete && message.isPostShare && message.sharedPost;
@@ -165,12 +166,10 @@ const Message = ({
           ? message.sharedPost._id
           : message.sharedPost;
 
-      // Chuyển hướng đến trang bài viết
       navigate(`/post/${postId}`);
     }
   };
 
-  // Render tin nhắn chia sẻ bài viết
   const renderPostShareMessage = () => {
     return (
       <div
@@ -233,23 +232,17 @@ const Message = ({
         ) : message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span
-            className={`text-sm px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words ${
-              ownMsg ? "text-white bg-violet-600" : "bg-gray-200"
-            }`}
-          >
-            {message.content}
-          </span>
+          <MessageContent message={message} ownMsg={ownMsg} />
         )}
       </MessageContainer>
     </div>
   ) : (
     <div className="flex justify-start items-end gap-2 w-full mb-2">
-      <Tooltip title={friend.name}>
+      <Tooltip title={friend?.name ?? "Người dùng không tồn tại"}>
         <img
           draggable="false"
           className="w-7 h-7 rounded-full object-cover"
-          src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+          src={BASE_PROFILE_IMAGE_URL + (friend?.avatar ?? "hero.png")}
           alt="avatar"
         />
       </Tooltip>
@@ -271,13 +264,7 @@ const Message = ({
         ) : message.content === "❤️" ? (
           <span className="text-4xl">{message.content}</span>
         ) : (
-          <span
-            className={`text-sm px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words ${
-              ownMsg ? "text-white bg-violet-600" : "bg-gray-200"
-            }`}
-          >
-            {message.content}
-          </span>
+          <MessageContent message={message} ownMsg={ownMsg} />
         )}
       </MessageContainer>
     </div>

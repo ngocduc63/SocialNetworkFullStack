@@ -36,6 +36,7 @@ exports.newChat = catchAsync(async (req, res, next) => {
       users: [req.user._id, ...users],
       name: `${user.name} và ${users.length} người khác`,
       avatar: "hero.png",
+      isGroup: true,
     });
 
     res.status(200).json({

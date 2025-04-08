@@ -46,16 +46,22 @@ export const deleteMessage = (messId) => async (dispatch) => {
 };
 
 // New Message
-export const sendMessage = (msgData) => async (dispatch) => {
+export const sendMessage = (formData) => async (dispatch) => {
   try {
     dispatch({ type: NEW_MESSAGE_REQUEST });
-    const config = { header: { "Content-Type": "application/json" } };
-    const { data } = await axios.post("/api/v1/newMessage/", msgData, config);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    const { data } = await axios.post("/api/v1/newMessage/", formData, config);
 
     dispatch({
       type: NEW_MESSAGE_SUCCESS,
       payload: data,
     });
+
+    return data;
   } catch (error) {
     dispatch({
       type: NEW_MESSAGE_FAIL,

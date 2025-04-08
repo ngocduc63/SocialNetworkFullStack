@@ -28,6 +28,20 @@ const messageSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
     },
+    type: {
+      type: String,
+      trim: true,
+    },
+    images: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    isDelete: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
