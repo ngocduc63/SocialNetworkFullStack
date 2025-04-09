@@ -9,6 +9,8 @@ const ErrorHandler = require("../utils/errorHandler");
 exports.newMessage = catchAsync(async (req, res, next) => {
   const { chatId, content, idReply = null } = req.body;
 
+  const replyContent = idReply ? JSON.parse(idReply) : null;
+
   const images =
     req.files && req.files.length > 0
       ? req.files.map((file) => file.filename)
@@ -20,13 +22,15 @@ exports.newMessage = catchAsync(async (req, res, next) => {
       sender: req.user._id,
       images,
       type: "image",
-      idReply: idReply?._id ?? null,
+      idReply: replyContent?._id ?? null,
     });
     await Chat.findByIdAndUpdate(chatId, { latestMessage: message });
 
     const rsMess = {
       ...message.toObject(),
-      idReply: idReply ? { _id: idReply._id, content: idReply.content } : null,
+      idReply: replyContent
+        ? { _id: replyContent._id, content: replyContent.content }
+        : null,
     };
 
     return res.status(200).json({
@@ -39,7 +43,7 @@ exports.newMessage = catchAsync(async (req, res, next) => {
     sender: req.user._id,
     chatId,
     content,
-    idReply: idReply?._id ?? null,
+    idReply: replyContent?._id ?? null,
   };
 
   const newMessage = await Message.create(msgData);
@@ -47,7 +51,9 @@ exports.newMessage = catchAsync(async (req, res, next) => {
 
   const rsMess = {
     ...newMessage.toObject(),
-    idReply: idReply ? { _id: idReply._id, content: idReply.content } : null,
+    idReply: replyContent
+      ? { _id: replyContent._id, content: replyContent.content }
+      : null,
   };
 
   return res.status(200).json({

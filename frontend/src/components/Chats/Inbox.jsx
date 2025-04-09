@@ -116,14 +116,10 @@ const Inbox = () => {
       const formData = new FormData();
       formData.append("chatId", params.chatId);
       formData.append("content", fileList?.length > 0 ? "Đã gửi ảnh" : mess);
-      if (messReply) formData.append("idReply", messReply);
+      if (messReply) formData.append("idReply", JSON.stringify(messReply));
 
       fileList?.forEach((file, index) => {
         formData.append(`images`, file.originFileObj);
-      });
-
-      const images = fileList?.map((file, index) => {
-        return file.name;
       });
 
       dispatch(sendMessage(formData)).then((data) => {
