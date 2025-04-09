@@ -31,6 +31,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import ChatDetailModal from "./ChatDetailModal";
 import ChatForm from "./ChatForm";
 import ChatBox from "./ChatBox";
+import { updateLastMess } from "../../reducers/chatsReducer";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const Inbox = () => {
         type: ALL_MESSAGES_ADD,
         payload: data,
       });
+      dispatch(updateLastMess(chatId, data));
     });
     socket.current.on("receiveDeleteMessage", (data) => {
       const { senderId, messId } = data;

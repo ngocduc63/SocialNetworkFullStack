@@ -10,6 +10,7 @@ import {
   NEW_CHAT_RESET,
   NEW_CHAT_SUCCESS,
   UPDATE_AVATAR_CHAT,
+  UPDATE_LAST_MESS,
   UPDATE_NAME_CHAT,
 } from "../constants/chatConstants";
 
@@ -50,6 +51,20 @@ export const allChatsReducer = (state = { chats: [] }, { type, payload }) => {
             ? { ...chat, avatar: payload.avatar }
             : chat,
         ),
+      };
+    case UPDATE_LAST_MESS:
+      return {
+        ...state,
+        loading: false,
+        chats: state.chats.map((chat) => {
+          if (chat._id === payload.chatId) {
+            return {
+              ...chat,
+              latestMessage: payload.mess,
+            };
+          }
+          return chat;
+        }),
       };
     case DELETE_USER_CHAT:
       return {
@@ -188,4 +203,9 @@ export const deleteUsersFromChat = (chatId, userIds) => ({
 export const addUsersToChat = (chatId, users) => ({
   type: ADD_USER_CHAT,
   payload: { chatId, users },
+});
+
+export const updateLastMess = (chatId, mess) => ({
+  type: UPDATE_LAST_MESS,
+  payload: { chatId, mess },
 });

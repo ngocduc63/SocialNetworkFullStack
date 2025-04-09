@@ -7,6 +7,7 @@ import ChatListItem from "./ChatListItem";
 import { IconCreateChat, IconCreateTask } from "./SvgIcon";
 import Tasks from "../Tasks/Tasks";
 import { Tooltip } from "antd";
+import { Skeleton } from "@mui/material";
 
 const Sidebar = ({ openModal, socket }) => {
   const dispatch = useDispatch();
@@ -52,17 +53,23 @@ const Sidebar = ({ openModal, socket }) => {
           <div className="flex flex-col overflow-y-auto overflow-x-hidden">
             <span className="px-4 py-2 font-medium">Messages</span>
 
-            {/* {loading &&
-                        Array(10).fill("").map((el, i) => (
-                            <div className="flex items-center gap-2 py-2 px-4" key={i}>
-                                <Skeleton animation="wave" variant="circular" width={65} height={50} />
-                                <div className="flex flex-col gap-0 w-full">
-                                    <Skeleton height={23} width="85%" animation="wave" />
-                                    <Skeleton height={23} width="60%" animation="wave" />
-                                </div>
-                            </div>
-                        ))
-                    } */}
+            {loading &&
+              Array(10)
+                .fill("")
+                .map((el, i) => (
+                  <div className="flex items-center gap-2 py-2 px-4" key={i}>
+                    <Skeleton
+                      animation="wave"
+                      variant="circular"
+                      width={65}
+                      height={50}
+                    />
+                    <div className="flex flex-col gap-0 w-full">
+                      <Skeleton height={23} width="85%" animation="wave" />
+                      <Skeleton height={23} width="60%" animation="wave" />
+                    </div>
+                  </div>
+                ))}
 
             {chats?.map((c) => (
               <ChatListItem {...c} key={c._id} />
