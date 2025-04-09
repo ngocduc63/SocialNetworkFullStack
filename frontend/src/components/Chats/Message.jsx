@@ -29,6 +29,8 @@ const MessageContainer = ({
   checkIsDelete,
   isPostShare,
   handlePostClick,
+  targetMessageId,
+  setTargetMessageId,
 }) => {
   const [hover, setHover] = useState(false);
   const showDeleteConfirm = () => {
@@ -51,9 +53,18 @@ const MessageContainer = ({
         }`}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        style={{
+          border:
+            targetMessageId === message._id ? "1px solid #8A2BE2" : "unset",
+          maxWidth: "fit-content",
+          borderRadius: 8,
+        }}
       >
         {message?.idReply && message?.idReply?.content && (
-          <div className="bg-gray-100 rounded-lg px-3 py-1 max-w-xs -mb-1 text-sm text-gray-700 cursor-pointer">
+          <div
+            className="bg-gray-100 rounded-lg px-3 py-1 max-w-xs -mb-1 text-sm text-gray-700 cursor-pointer"
+            onClick={() => setTargetMessageId(message.idReply._id)}
+          >
             <div className="flex items-center gap-0.5 font-medium text-gray-500">
               <ReplyIcon className="text-gray-400 w-4 h-4" />
               <span>{"Đã trả lời tin nhắn"}</span>
@@ -97,14 +108,23 @@ const MessageContainer = ({
 
   return (
     <div
-      className={`relative flex w-full flex-col ${
+      className={`relative flex w-full flex-col p-1 ${
         ownMsg ? "items-end" : "items-start"
       }`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={{
+        border: targetMessageId === message._id ? "1px solid #8A2BE2" : "unset",
+        maxWidth: "fit-content",
+        borderRadius: 8,
+      }}
     >
       {message?.idReply && message?.idReply?.content && (
-        <div className="bg-gray-100 rounded-lg px-3 py-1 max-w-xs -mb-1 text-sm text-gray-700 cursor-pointer">
+        <div
+          role={"button"}
+          className="bg-gray-100 rounded-lg px-3 py-1 max-w-xs -mb-1 text-sm text-gray-700 cursor-pointer"
+          onClick={() => setTargetMessageId(message.idReply._id)}
+        >
           <div className="flex items-center gap-0.5 font-medium text-gray-500">
             <ReplyIcon className="text-gray-400 w-4 h-4" />
             <span>{"Đã trả lời tin nhắn"}</span>
@@ -151,6 +171,8 @@ const Message = ({
   message,
   handleSetReply,
   handleDeleteMessage,
+  targetMessageId,
+  setTargetMessageId,
 }) => {
   const navigate = useNavigate();
   const checkIsDelete = message?.isDelete;
@@ -213,7 +235,7 @@ const Message = ({
   };
 
   return ownMsg ? (
-    <div className="flex justify-end w-full mb-2">
+    <div className="flex justify-end w-full">
       <MessageContainer
         ownMsg={ownMsg}
         handleSetReply={handleSetReply}
@@ -222,6 +244,8 @@ const Message = ({
         checkIsDelete={checkIsDelete}
         isPostShare={isPostShare}
         handlePostClick={handlePostClick}
+        targetMessageId={targetMessageId}
+        setTargetMessageId={setTargetMessageId}
       >
         {checkIsDelete ? (
           <span className="text-sm text-red-400 bg-gray-100 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">
@@ -237,7 +261,7 @@ const Message = ({
       </MessageContainer>
     </div>
   ) : (
-    <div className="flex justify-start items-end gap-2 w-full mb-2">
+    <div className="flex justify-start items-end gap-2 w-full">
       <Tooltip title={friend?.name ?? "Người dùng không tồn tại"}>
         <img
           draggable="false"
@@ -254,6 +278,8 @@ const Message = ({
         checkIsDelete={checkIsDelete}
         isPostShare={isPostShare}
         handlePostClick={handlePostClick}
+        targetMessageId={targetMessageId}
+        setTargetMessageId={setTargetMessageId}
       >
         {checkIsDelete ? (
           <span className="text-sm text-red-400 bg-gray-100 px-4 py-3 rounded-3xl max-w-xs whitespace-pre-wrap break-words">

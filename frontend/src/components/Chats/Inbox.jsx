@@ -21,7 +21,6 @@ import {
 } from "../../constants/messageConstants";
 import { BASE_PROFILE_IMAGE_URL } from "../../utils/constants";
 import Sidebar from "./Sidebar";
-import Message from "./Message";
 import SearchModal from "./SearchModal";
 import SpinLoader from "../Layouts/SpinLoader";
 import MetaData from "../Layouts/MetaData";
@@ -31,6 +30,7 @@ import { IconDetailChat } from "./SvgIcon";
 import { CloseOutlined } from "@ant-design/icons";
 import ChatDetailModal from "./ChatDetailModal";
 import ChatForm from "./ChatForm";
+import ChatBox from "./ChatBox";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -38,7 +38,6 @@ const Inbox = () => {
 
   const inputRef = useRef(null);
   const [message, setMessage] = useState("");
-  const scrollRef = useRef(null);
   const { socket } = useContext(AppContext);
 
   const [typing, setTyping] = useState(false);
@@ -58,9 +57,7 @@ const Inbox = () => {
   );
   const roomName = chat?.name ?? null;
   const listUser = chat?.users ?? [];
-  const { error, messages, loading } = useSelector(
-    (state) => state.allMessages,
-  );
+  const { error, loading } = useSelector((state) => state.allMessages);
 
   const userId = params.userId;
 
@@ -142,10 +139,6 @@ const Inbox = () => {
     },
     [messReply, message, chatId],
   );
-
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   const handleTyping = (e) => {
     setMessage(e.target.value);
@@ -299,24 +292,14 @@ const Inbox = () => {
                 {loading ? (
                   <SpinLoader />
                 ) : (
-                  messages.map((mess, i) => (
-                    <React.Fragment key={mess._id}>
-                      <Message
-                        ownMsg={mess.sender === loggedInUser._id}
-                        friend={
-                          roomName
-                            ? chat.users.find(
-                                (user) => user._id === mess.sender,
-                              )
-                            : friend
-                        }
-                        message={mess}
-                        handleSetReply={handleSetReply}
-                        handleDeleteMessage={handleDeleteMessage}
-                      />
-                      <div ref={scrollRef}></div>
-                    </React.Fragment>
-                  ))
+                  <ChatBox
+                    loggedInUser={loggedInUser}
+                    chat={chat}
+                    roomName={roomName}
+                    friend={friend}
+                    handleSetReply={handleSetReply}
+                    handleDeleteMessage={handleDeleteMessage}
+                  />
                 )}
               </div>
 
