@@ -47,7 +47,6 @@ const Inbox = () => {
   const [isShowDetailChat, setIsShowDetailChat] = useState(false);
 
   const [isOnline, setIsOnline] = useState(false);
-  const [showEmojis, setShowEmojis] = useState(false);
 
   const [showSearch, setShowSearch] = useState(false);
 
@@ -62,7 +61,6 @@ const Inbox = () => {
   const { error, messages, loading } = useSelector(
     (state) => state.allMessages,
   );
-  const { success, newMessage } = useSelector((state) => state.newMessage);
 
   const userId = params.userId;
 
@@ -353,6 +351,7 @@ const Inbox = () => {
               <ChatForm
                 handleSubmit={handleSubmit}
                 handleKeyDown={handleKeyDown}
+                inputRef={inputRef}
               />
             </div>
           )}

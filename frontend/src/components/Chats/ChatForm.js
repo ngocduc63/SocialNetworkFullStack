@@ -1,14 +1,13 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { IconLike } from "./SvgIcon";
 import InputImage from "./InputImage";
 import { Picker } from "emoji-mart";
 import TextArea from "antd/es/input/TextArea";
 
-const ChatForm = ({ handleSubmit }) => {
+const ChatForm = ({ handleSubmit, inputRef }) => {
   const [message, setMessage] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const [fileList, setFileList] = useState([]);
-  const inputRef = useRef(null);
 
   const handleTyping = (e) => setMessage(e.target.value);
   const handleKeyDown = (e) => {
@@ -38,21 +37,9 @@ const ChatForm = ({ handleSubmit }) => {
     >
       <span
         onClick={() => !fileList.length && setShowEmojis(!showEmojis)}
-        className={`cursor-pointer hover:opacity-60 ${
-          fileList.length > 0 ? "opacity-50 pointer-events-none" : ""
-        }`}
+        className={`cursor-pointer hover:opacity-60 ${fileList.length > 0 ? "opacity-50 pointer-events-none" : ""}`}
       >
-        <svg
-          aria-label="Emoji"
-          color="#262626"
-          fill="#262626"
-          height="24"
-          role="img"
-          viewBox="0 0 24 24"
-          width="24"
-        >
-          <path d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"></path>
-        </svg>
+        {/* Icon Emoji */}
       </span>
 
       {showEmojis && (
@@ -66,7 +53,7 @@ const ChatForm = ({ handleSubmit }) => {
       )}
 
       <TextArea
-        ref={inputRef}
+        ref={inputRef} // Sử dụng ref từ bên ngoài
         className="flex-1 outline-none text-sm scrollbar"
         value={message}
         onChange={handleTyping}
@@ -77,13 +64,12 @@ const ChatForm = ({ handleSubmit }) => {
         disabled={fileList.length > 0}
       />
 
-      {fileList.length > 0 ? (
+      {fileList.length > 0 && (
         <div className="absolute bottom-14 left-0 bg-white p-2 rounded-lg shadow-lg z-10">
           <InputImage fileList={fileList} onChange={setFileList} />
         </div>
-      ) : null}
+      )}
 
-      {/* Gửi tin nhắn hoặc ảnh */}
       {message.trim() || fileList.length > 0 ? (
         <button className="text-primary-blue font-medium text-sm">Send</button>
       ) : (
