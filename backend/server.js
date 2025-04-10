@@ -104,6 +104,126 @@ io.on("connection", (socket) => {
     console.log(`receiveDeleteMessage sent to room ${chatId}:`, data);
   });
 
+  //xử lý video call
+  socket.on("initiate-call", ({ callerId, receiverId }) => {
+    console.log(`Call initiated from ${callerId} to ${receiverId}`);
+
+    // Kiểm tra xem người nhận có online không
+    const receiverSocketId = userSockets[receiverId];
+
+    if (receiverSocketId) {
+      // Gửi thông báo cuộc gọi đến người nhận
+      io.to(receiverSocketId).emit("incoming-call", {
+        callerId,
+        callerSocketId: socket.id,
+      });
+      console.log(`Sent incoming call notification to ${receiverId}`);
+    } else {
+      // Người nhận không online, thông báo cho người gọi
+      socket.emit("call-failed", {
+        message: "User is not online",
+        receiverId,
+      });
+      console.log(`Call failed: User ${receiverId} is not online`);
+    }
+  });
+
+  socket.on("signal", (data) => {
+    socket.to(data.to).emit("signal", { signal: data.signal, from: data.from });
+  });
+
+  // Xử lý khi người dùng chấp nhận cuộc gọi
+  socket.on("accept-call", ({ callerId, receiverId }) => {
+    const callerSocketId = userSockets[callerId];
+
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("call-accepted", {
+        receiverId,
+        receiverSocketId: socket.id,
+      });
+      console.log(`Call accepted by ${receiverId}`);
+    } else {
+      socket.emit("call-failed", {
+        message: "Caller is no longer online",
+        callerId,
+      });
+      console.log(`Call failed: Caller ${callerId} is no longer online`);
+    }
+  });
+
+  // Xử lý khi người dùng từ chối cuộc gọi
+  socket.on("reject-call", ({ callerId, receiverId }) => {
+    const callerSocketId = userSockets[callerId];
+
+    if (callerSocketId) {
+      io.to(callerSocketId).emit("call-rejected", {
+        receiverId,
+        message: "Call was rejected",
+      });
+      console.log(`Call rejected by ${receiverId}`);
+    }
+  });
+
+  // Chuyển tiếp SDP offer WebRTC
+  socket.on("call-offer", ({ offer, from, to }) => {
+    const receiverSocketId = userSockets[to];
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("call-offer", {
+        offer,
+        from,
+      });
+      console.log(`WebRTC offer sent from ${from} to ${to}`);
+    }
+  });
+
+  // Chuyển tiếp SDP answer WebRTC
+  socket.on("call-answer", ({ answer, from, to }) => {
+    const receiverSocketId = userSockets[to];
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("call-answer", {
+        answer,
+        from,
+      });
+      console.log(`WebRTC answer sent from ${from} to ${to}`);
+    }
+  });
+
+  // Chuyển tiếp ICE candidates
+  socket.on("ice-candidate", ({ candidate, from, to }) => {
+    const receiverSocketId = userSockets[to];
+
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("ice-candidate", {
+        candidate,
+        from,
+      });
+      console.log(`ICE candidate exchanged between ${from} and ${to}`);
+    }
+  });
+
+  // Xử lý khi kết thúc cuộc gọi
+  socket.on("end-call", ({ callerId, receiverId }) => {
+    console.log(`Call ended between ${callerId} and ${receiverId}`);
+
+    // Gửi thông báo kết thúc đến người gọi (nếu không phải người kết thúc)
+    if (callerId !== socket.id) {
+      const callerSocketId = userSockets[callerId];
+      if (callerSocketId) {
+        io.to(callerSocketId).emit("call-ended", { by: receiverId });
+      }
+    }
+
+    // Gửi thông báo kết thúc đến người nhận (nếu không phải người kết thúc)
+    if (receiverId !== socket.id) {
+      const receiverSocketId = userSockets[receiverId];
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("call-ended", { by: callerId });
+      }
+    }
+  });
+
   // Xử lý typing states
   socket.on("typing", ({ senderId, receiverId }) => {
     const receiverSocketId = userSockets[receiverId];

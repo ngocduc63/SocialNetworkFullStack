@@ -32,6 +32,7 @@ import ChatDetailModal from "./ChatDetailModal";
 import ChatForm from "./ChatForm";
 import ChatBox from "./ChatBox";
 import { updateLastMess } from "../../reducers/chatsReducer";
+import VideoCallButton from "../VideoCall/VideoCallButton";
 
 const Inbox = () => {
   const dispatch = useDispatch();
@@ -286,7 +287,15 @@ const Inbox = () => {
                     {roomName ?? friend.name}
                   </span>
                 </div>
-                <IconDetailChat showDetailChat={showDetailChat} />
+                <div className={"flex gap-2 items-center"}>
+                  {!roomName && (
+                    <VideoCallButton
+                      receiverId={friend._id}
+                      currentUserId={loggedInUser._id}
+                    />
+                  )}
+                  <IconDetailChat showDetailChat={showDetailChat} />
+                </div>
               </div>
 
               {/* messages */}

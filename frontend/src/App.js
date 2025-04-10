@@ -12,6 +12,8 @@ import UpdateProfile from "./components/User/Update/UpdateProfile";
 import UpdatePassword from "./components/User/Update/UpdatePassword";
 import SpinLoader from "./components/Layouts/SpinLoader";
 import { AppProvider } from "./context/AppContext";
+import VideoCallPage from "./components/VideoCall/VideoCallPage";
+import AppCallNotification from "./components/VideoCall/AppCallNotification";
 
 const Home = lazy(() => import("./components/Home/Home"));
 const SignUp = lazy(() => import("./components/User/SignUp"));
@@ -58,6 +60,7 @@ function App() {
   return (
     <AppProvider>
       {isAuthenticated && <Header />}
+      <AppCallNotification />
       <Suspense fallback={<SpinLoader />}>
         <Routes>
           <Route
@@ -127,7 +130,14 @@ function App() {
               </PrivateRoute>
             }
           />
-
+          <Route
+            path="/video-call"
+            element={
+              <PrivateRoute>
+                <VideoCallPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
