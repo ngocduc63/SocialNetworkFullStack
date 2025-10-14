@@ -1,12 +1,14 @@
+export const BASE_URL = 'https://pollux-sqim.onrender.com'
+
 export const BASE_PROFILE_IMAGE_URL =
-  "http://localhost:4000/public/uploads/profiles/";
+  `${BASE_URL}/public/uploads/profiles/`;
 export const BASE_POST_IMAGE_URL =
-  "http://localhost:4000/public/uploads/posts/";
+  `${BASE_URL}/public/uploads/posts/`;
 
 export const BASE_MESS_IMAGE_URL =
-  "http://localhost:4000/public/uploads/messages/";
+  `${BASE_URL}/public/uploads/messages/`;
 
-export const SOCKET_ENDPOINT = "http://localhost:4000";
+export const SOCKET_ENDPOINT = BASE_URL;
 
 // export const BASE_PROFILE_IMAGE_URL = 'https://instagrammern.herokuapp.com/public/uploads/profiles/';
 // export const BASE_POST_IMAGE_URL = 'https://instagrammern.herokuapp.com/public/uploads/posts/';

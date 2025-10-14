@@ -2,6 +2,8 @@ const app = require("./app");
 const connectDatabase = require("./config/database");
 const PORT = process.env.PORT || 4000;
 
+
+
 connectDatabase();
 
 const server = app.listen(PORT, () => {
@@ -12,9 +14,11 @@ const server = app.listen(PORT, () => {
 
 const io = require("socket.io")(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
+    methods: ["GET", "POST"],
   },
 });
+
 
 // Lưu trữ người dùng đang online bằng object thay vì mảng
 // Sử dụng cấu trúc: { userId: socketId }
