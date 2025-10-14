@@ -7,9 +7,10 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-    origin: "*",          // Cho phép tất cả domain
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: ["http://localhost:3000", "https://yourfrontend.com"],
+    credentials: true,
+    methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
@@ -41,7 +42,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:4000/auth/google/callback",
+      callbackURL: `${process.env.BE_DOMAIN}/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -92,7 +93,7 @@ app.get(
     const sendCookie = require("./utils/sendCookieLoginGoogle");
     sendEmail(req.user.email);
     sendCookie(req.user, 200, res);
-    res.redirect(`http://localhost:3000/`);
+    res.redirect(`${process.env.FE_DOMAIN}/`);
   },
 );
 

@@ -10,7 +10,8 @@ import { HelmetProvider } from "react-helmet-async";
 import axios from "axios";
 import { BASE_URL} from "./utils/constants";
 axios.defaults.baseURL = BASE_URL
-
+axios.defaults.withCredentials = true;
+axios.defaults.timeout = 30000;
 
 ReactDOM.render(
   <React.StrictMode>
