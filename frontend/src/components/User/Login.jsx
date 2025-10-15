@@ -7,6 +7,7 @@ import BackdropLoader from "../Layouts/BackdropLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { clearErrors, loginUser } from "../../actions/userAction";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {BASE_URL} from "../../utils/constants";
 
 // Tạo theme với màu tím cho TextField
 const purpleTheme = createTheme({
@@ -35,7 +36,7 @@ const Login = () => {
 
   // Hàm xử lý login với Google
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:4000/auth/google";
+    window.location.href = `${BASE_URL}/auth/google`;
   };
 
   useEffect(() => {
