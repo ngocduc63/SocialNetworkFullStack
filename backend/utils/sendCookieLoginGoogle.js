@@ -5,6 +5,9 @@ const sendCookieLoginGoogle = (user, statusCode, res) => {
       Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
     ),
     httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/"
   };
   res.status(statusCode).cookie("token", token, options); // Chỉ set cookie, không gửi JSON
 };
