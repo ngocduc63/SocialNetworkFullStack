@@ -58,6 +58,9 @@ exports.logoutUser = catchAsync(async (req, res, next) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/"
   });
 
   res.status(200).json({
@@ -222,6 +225,9 @@ exports.deleteProfile = catchAsync(async (req, res, next) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/"
   });
 
   for (let i = 0; i < posts.length; i++) {
