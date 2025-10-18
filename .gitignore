@@ -3,5 +3,5 @@
 
 # local env files
 /backend/config/config.env
-/public
+#/public
 .idea/
