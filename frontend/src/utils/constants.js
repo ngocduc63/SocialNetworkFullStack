@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://pollux-sqim.onrender.com'
+export const BASE_URL = 'https://polluxx.onrender.com';
 
 export const BASE_PROFILE_IMAGE_URL =
   `${BASE_URL}/public/uploads/profiles/`;
