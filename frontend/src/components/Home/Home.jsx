@@ -10,7 +10,7 @@ const Home = () => {
 
   return (
     <>
-      <MetaData title="Pollux" />
+      <MetaData title="BOPS" />
       <AppCallNotification />
       <div className="flex h-full md:w-4/5 lg:w-4/6 mt-14 mx-auto">
         <PostsContainer postId={postId} />

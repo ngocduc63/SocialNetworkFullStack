@@ -32,7 +32,7 @@ const UserListItem = ({ _id, username, avatar }) => {
           >
             {username}
           </Link>
-          <span className="text-gray-400 text-xs">New to Pollux</span>
+          <span className="text-gray-400 text-xs">New to BOPS</span>
         </div>
       </div>
       <button

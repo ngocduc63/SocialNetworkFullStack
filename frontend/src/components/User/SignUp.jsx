@@ -92,7 +92,7 @@ const SignUp = () => {
           <img
             draggable="false"
             className="mx-auto h-30 w-36 object-contain"
-            src="https://res.cloudinary.com/hdtien/image/upload/v1742995284/ten_mj9ed3.png"
+            src="https://res.cloudinary.com/dhwtrug6x/image/upload/c_crop,h_1024/v1768633355/Screenshot_2026-01-17_at_14.00.45_mvqq8v.png"
             alt="Pollux Logo"
           />
           <form

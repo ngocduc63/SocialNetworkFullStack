@@ -85,7 +85,7 @@ const UpdateProfile = () => {
 
   return (
     <>
-      <MetaData title="Edit Profile • Pollux" />
+      <MetaData title="Edit Profile • BOPS" />
 
       <form
         onSubmit={handleUpdate}

@@ -12,9 +12,9 @@ const transporter = nodemailer.createTransport({
 const sendMailTrap = async (toEmail) => {
   try {
     let mailOptions = {
-      from: '"POLLUX" <noreply@pollux.com>',
+      from: '"BOPS" <noreply@pollux.com>',
       to: toEmail,
-      subject: "Chào mừng bạn đến với POLLUX",
+      subject: "Chào mừng bạn đến với BOPS",
       text: `Xin chào, bạn đã đăng nhập vào lúc ${new Date().toLocaleString()}.`,
     };
 

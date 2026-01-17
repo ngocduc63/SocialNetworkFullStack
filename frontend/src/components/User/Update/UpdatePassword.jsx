@@ -53,7 +53,7 @@ const UpdatePassword = () => {
 
   return (
     <>
-      <MetaData title="Change Password • Pollux" />
+      <MetaData title="Change Password • BOPS" />
 
       <form
         onSubmit={handlePasswordUpdate}

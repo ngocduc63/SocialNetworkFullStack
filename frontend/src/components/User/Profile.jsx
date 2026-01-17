@@ -121,7 +121,7 @@ const Profile = () => {
   return (
     <>
       <MetaData
-        title={`${user?.name} (@${user?.username}) • Pollux photos and videos`}
+        title={`${user?.name} (@${user?.username}) • BOPS photos and videos`}
       />
 
       {loading && <BackdropLoader />}
