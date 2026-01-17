@@ -7,7 +7,7 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://pollux-opal.vercel.app" ],
+    origin: ["http://localhost:3000", "https://pollux-opal.vercel.app", "https://social-network-bops.vercel.app" ],
     credentials: true,
     methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
