@@ -5,13 +5,12 @@ const Comment = require("../models/commentModel");
 const Notification = require("../models/notificationModel");
 const catchAsync = require("../middlewares/catchAsync");
 const ErrorHandler = require("../utils/errorHandler");
-const deleteFile = require("../utils/deleteFile");
 
 // Create New Post
 exports.newPost = catchAsync(async (req, res, next) => {
   const postData = {
     caption: req.body.caption,
-    image: req.file.filename,
+    image: req.file.path,
     postedBy: req.user._id,
   };
 
@@ -121,7 +120,6 @@ exports.deletePost = catchAsync(async (req, res, next) => {
     return next(new ErrorHandler("Unauthorized", 401));
   }
 
-  await deleteFile("posts/", post.image);
 
   // Sử dụng deleteOne thay vì remove (remove đã deprecated)
   await Post.deleteOne({ _id: post._id });

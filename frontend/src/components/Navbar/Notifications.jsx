@@ -283,7 +283,7 @@ const Notifications = () => {
         <div className="mr-3">
           <img
             src={
-              BASE_PROFILE_IMAGE_URL + notification.sender?.avatar ||
+               notification.sender?.avatar ||
               "/default-avatar.png"
             }
             alt="Avatar"

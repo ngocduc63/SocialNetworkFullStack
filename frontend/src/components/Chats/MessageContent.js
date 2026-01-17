@@ -34,7 +34,7 @@ const MessageContent = ({ message, ownMsg }) => {
         <div className="mt-2 relative flex gap-2">
           {images.length === 1 ? (
             <img
-              src={BASE_MESS_IMAGE_URL + images[0]}
+              src={images[0]}
               alt="image"
               className="w-40 h-40 object-cover rounded-lg cursor-pointer"
               onClick={() => {
@@ -48,7 +48,7 @@ const MessageContent = ({ message, ownMsg }) => {
               onClick={() => setVisible(true)}
             >
               <img
-                src={BASE_MESS_IMAGE_URL + images[0]}
+                src={images[0]}
                 alt="image"
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -69,7 +69,7 @@ const MessageContent = ({ message, ownMsg }) => {
       >
         <div className="relative flex justify-center items-center">
           <img
-            src={BASE_MESS_IMAGE_URL + images[currentIndex]}
+            src={images[currentIndex]}
             alt="Preview"
             className="w-full object-contain max-h-[80vh]"
           />

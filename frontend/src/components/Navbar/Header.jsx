@@ -74,7 +74,7 @@ const Header = () => {
               draggable="false"
               loading="lazy"
               className="w-full h-full rounded-full object-cover"
-              src={BASE_PROFILE_IMAGE_URL + user.avatar}
+              src={ user.avatar}
               alt=""
             />
           </div>

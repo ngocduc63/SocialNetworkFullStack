@@ -11,30 +11,32 @@ const {
 } = require("../controllers/postController");
 const { isAuthenticated } = require("../middlewares/auth");
 const path = require("path");
-const multer = require("multer");
+// const multer = require("multer");
+const upload = require("../middlewares/upload");
+
 
 const router = express();
 
-const postStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.resolve(__dirname, "../../public/uploads/posts"));
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "_" + Date.now() + path.extname(file.originalname),
-    );
-  },
-});
+// const postStorage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.resolve(__dirname, "../../public/uploads/posts"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(
+//       null,
+//       file.fieldname + "_" + Date.now() + path.extname(file.originalname),
+//     );
+//   },
+// });
 
-const postUpload = multer({
-  storage: postStorage,
-  limit: { fileSize: 1000000 * 10 },
-});
+// const postUpload = multer({
+//   storage: postStorage,
+//   limit: { fileSize: 1000000 * 10 },
+// });
 
 router
   .route("/post/new")
-  .post(isAuthenticated, postUpload.single("post"), newPost);
+  .post(isAuthenticated, upload.single("post"), newPost);
 
 router.route("/posts/all").get(allPosts);
 

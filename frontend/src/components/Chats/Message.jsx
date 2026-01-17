@@ -205,7 +205,7 @@ const Message = ({
             <div className="flex items-center">
               {message.sharedPost.image && (
                 <img
-                  src={BASE_POST_IMAGE_URL + message.sharedPost.image}
+                  src={message.sharedPost.image}
                   alt="Ảnh bài viết"
                   className="w-12 h-12 object-cover rounded-md"
                 />
@@ -266,7 +266,7 @@ const Message = ({
         <img
           draggable="false"
           className="w-7 h-7 rounded-full object-cover"
-          src={BASE_PROFILE_IMAGE_URL + (friend?.avatar ?? "hero.png")}
+          src={ (friend?.avatar ?? "hero.png")}
           alt="avatar"
         />
       </Tooltip>

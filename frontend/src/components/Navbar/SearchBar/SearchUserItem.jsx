@@ -11,7 +11,7 @@ const SearchUserItem = ({ _id, username, name, avatar }) => {
       <div className="flex space-x-3 items-center">
         <img
           className="w-11 h-11 rounded-full object-cover"
-          src={BASE_PROFILE_IMAGE_URL + avatar}
+          src={ avatar}
           alt="avatar"
         />
         <div className="flex flex-col items-start">

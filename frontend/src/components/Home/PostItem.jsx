@@ -191,7 +191,7 @@ const CommentItem = ({
         <img
           draggable="false"
           className="h-7 w-7 rounded-full object-cover mr-0.5"
-          src={BASE_PROFILE_IMAGE_URL + comment.comment_userId.avatar}
+          src={ comment.comment_userId.avatar}
           alt="avatar"
         />
         <div className="flex flex-col flex-1">
@@ -836,7 +836,7 @@ const PostItem = ({
             <img
               draggable="false"
               className="w-10 h-10 rounded-full object-cover"
-              src={BASE_PROFILE_IMAGE_URL + postedBy.avatar}
+              src={ postedBy.avatar}
               alt="avatar"
             />
           </Link>
@@ -953,7 +953,7 @@ const PostItem = ({
                     >
                       <div className="flex items-center">
                         <img
-                          src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                          src={ user.avatar}
                           alt={user.username}
                           className="w-10 h-10 rounded-full object-cover mr-3"
                         />
@@ -1002,7 +1002,7 @@ const PostItem = ({
           draggable="false"
           loading="lazy"
           className="w-full h-full object-cover object-center"
-          src={BASE_POST_IMAGE_URL + image}
+          src={image}
           alt="post image"
         />
         {likeEffect && (

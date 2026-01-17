@@ -21,7 +21,7 @@ const UserListItem = ({ _id, username, avatar }) => {
           <img
             draggable="false"
             className="w-9 h-9 rounded-full object-cover"
-            src={BASE_PROFILE_IMAGE_URL + avatar}
+            src={ avatar}
             alt="avatar"
           />
         </Link>

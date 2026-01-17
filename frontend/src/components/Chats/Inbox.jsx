@@ -265,7 +265,7 @@ const Inbox = () => {
                         loading="lazy"
                         className="w-full h-full rounded-full object-cover"
                         src={
-                          BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png"
+                           chat?.avatar ?? "hero.png"
                         }
                         alt="avatar"
                       />
@@ -274,7 +274,7 @@ const Inbox = () => {
                         draggable="false"
                         loading="lazy"
                         className="w-full h-full rounded-full object-cover"
-                        src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+                        src={ friend.avatar}
                         alt="avatar"
                       />
                     )}

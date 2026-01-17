@@ -63,7 +63,7 @@ const UpdatePassword = () => {
           <img
             draggable="false"
             className="w-11 h-11 rounded-full border object-cover"
-            src={BASE_PROFILE_IMAGE_URL + user.avatar}
+            src={ user.avatar}
             alt=""
           />
           <span className="text-2xl">{user.username}</span>

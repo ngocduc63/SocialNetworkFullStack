@@ -99,7 +99,7 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
                 <div className="flex space-x-2 items-center">
                   <img
                     key={assigner.id}
-                    src={BASE_PROFILE_IMAGE_URL + assigner.avatar}
+                    src={ assigner.avatar}
                     alt={`${assigner.name}'s avatar`}
                     className="rounded-full 2xl:w-8 2xl:h-8 w-7 h-7 object-cover"
                   />
@@ -138,7 +138,7 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
                 {users?.slice(0, 3).map((user, index) => (
                   <img
                     key={user.id}
-                    src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                    src={ user.avatar}
                     alt={user.name}
                     className={`rounded-full object-cover w-7 2xl:w-8 h-7 2xl:h-8  border-2 border-white shadow-md ${
                       index !== 0 ? "-ml-2" : ""
@@ -160,7 +160,7 @@ export default function TaskDetail({ isModalOpen, handleCancel, task }) {
                     className="flex items-center space-x-2 mb-2 last:mb-0"
                   >
                     <img
-                      src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                      src={ user.avatar}
                       alt={user.name}
                       className="w-7 h-7 2xl:w-8 2xl:h-8 rounded-full object-cover"
                     />

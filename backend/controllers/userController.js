@@ -5,7 +5,6 @@ const sendCookie = require("../utils/sendCookie");
 const ErrorHandler = require("../utils/errorHandler");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
-const deleteFile = require("../utils/deleteFile");
 
 // Signup User
 exports.signupUser = catchAsync(async (req, res, next) => {
@@ -16,9 +15,9 @@ exports.signupUser = catchAsync(async (req, res, next) => {
   });
   if (user) {
     if (user.username === username) {
-      return next(new ErrorHandler("Username already exists", 401));
+      return next(new ErrorHandler("Tên người dùng đã tồn tại", 401));
     }
-    return next(new ErrorHandler("Email already exists", 401));
+    return next(new ErrorHandler("Email đã được sử dụng", 401));
   }
 
   const newUser = await User.create({
@@ -26,7 +25,7 @@ exports.signupUser = catchAsync(async (req, res, next) => {
     email,
     username,
     password,
-    avatar: req.file.filename,
+    avatar: req.file.path,
   });
 
   sendCookie(newUser, 201, res);
@@ -191,12 +190,7 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
   }
 
   if (req.body.avatar !== "") {
-    const user = await User.findById(req.user._id);
-
-    if (user.avatar !== "hero.png") {
-      await deleteFile("profiles/", user.avatar);
-    }
-    newUserData.avatar = req.file.filename;
+    newUserData.avatar = req.file.path;
   }
 
   await User.findByIdAndUpdate(req.user._id, newUserData, {

@@ -26,7 +26,7 @@ const UserListItem = ({ _id, avatar, username, name, followers }) => {
             draggable="false"
             loading="lazy"
             className="w-10 h-10 rounded-full object-cover"
-            src={BASE_PROFILE_IMAGE_URL + avatar}
+            src={ avatar}
             alt=""
           />
         </Link>

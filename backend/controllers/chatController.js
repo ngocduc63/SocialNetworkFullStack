@@ -102,7 +102,7 @@ exports.updateAvatarGroup = catchAsync(async (req, res, next) => {
   if (avatar !== "") {
     const updatedChat = await Chat.findByIdAndUpdate(
       chatId,
-      { avatar: req.file.filename },
+      { avatar: req.file.path },
       { new: true, runValidators: true },
     ).populate("users latestMessage");
 

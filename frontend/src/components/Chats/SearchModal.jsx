@@ -194,7 +194,7 @@ const NewDialog = ({
                   <img
                     draggable="false"
                     className="w-11 h-11 rounded-full object-cover"
-                    src={BASE_PROFILE_IMAGE_URL + u.avatar}
+                    src={ u.avatar}
                     alt="avatar"
                   />
                   <div className="flex flex-col items-start">

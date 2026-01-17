@@ -100,7 +100,7 @@ const UpdateProfile = () => {
               src={
                 avatarPreview
                   ? avatarPreview
-                  : BASE_PROFILE_IMAGE_URL + oldAvatar
+                  :  oldAvatar
               }
               alt="avatar"
             />

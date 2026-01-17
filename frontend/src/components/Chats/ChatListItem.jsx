@@ -43,14 +43,14 @@ const ChatListItem = ({
           <img
             draggable="false"
             className="w-full h-full rounded-full object-cover"
-            src={BASE_PROFILE_IMAGE_URL + avatar ?? "hero.png"}
+            src={ avatar ?? "hero.png"}
             alt="avatar"
           />
         ) : (
           <img
             draggable="false"
             className="w-full h-full rounded-full object-cover"
-            src={BASE_PROFILE_IMAGE_URL + friend.avatar}
+            src={ friend.avatar}
             alt="avatar"
           />
         )}

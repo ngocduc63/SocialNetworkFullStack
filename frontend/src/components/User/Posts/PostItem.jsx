@@ -224,7 +224,7 @@ const PostItem = ({
           <img
             draggable="false"
             className="w-9 h-9 rounded-full object-cover mr-2.5"
-            src={BASE_PROFILE_IMAGE_URL + avatar}
+            src={ avatar}
             alt="avatar"
           />
         </Link>
@@ -260,7 +260,7 @@ const PostItem = ({
           draggable="false"
           loading="lazy"
           className="hover:opacity-75 group-hover:opacity-75 cursor-pointer object-cover h-full w-full"
-          src={BASE_POST_IMAGE_URL + image}
+          src={image}
           alt="Post"
         />
         <div className="hidden group-hover:flex text-white absolute pointer-events-none gap-4">
@@ -282,7 +282,7 @@ const PostItem = ({
             <img
               draggable="false"
               className="object-contain h-full w-full"
-              src={BASE_POST_IMAGE_URL + image}
+              src={image}
               alt="post"
             />
             {likeEffect && (
@@ -304,7 +304,7 @@ const PostItem = ({
                   <img
                     draggable="false"
                     className="w-10 h-10 rounded-full object-cover"
-                    src={BASE_PROFILE_IMAGE_URL + postedBy.avatar}
+                    src={ postedBy.avatar}
                     alt="avatar"
                   />
                 </Link>
@@ -351,7 +351,7 @@ const PostItem = ({
                   <img
                     draggable="false"
                     className="w-9 h-9 rounded-full object-cover"
-                    src={BASE_PROFILE_IMAGE_URL + postedBy.avatar}
+                    src={ postedBy.avatar}
                     alt="avatar"
                   />
                 </Link>

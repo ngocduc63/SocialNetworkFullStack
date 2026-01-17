@@ -106,7 +106,7 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
                   src={
                     avatarPreview
                       ? avatarPreview
-                      : (BASE_PROFILE_IMAGE_URL + chat?.avatar ?? "hero.png")
+                      : ( chat?.avatar ?? "hero.png")
                   }
                   alt="avatar"
                 />
@@ -223,7 +223,7 @@ const ChatDetailModal = ({ chat, open, onClose, users }) => {
                 <List.Item.Meta
                   avatar={
                     <Avatar
-                      src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                      src={ user.avatar}
                       sx={{ width: 50, height: 50 }}
                     />
                   }

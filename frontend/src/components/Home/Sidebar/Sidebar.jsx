@@ -51,7 +51,7 @@ const Sidebar = () => {
               <img
                 draggable="false"
                 className="w-14 h-14 rounded-full object-cover"
-                src={BASE_PROFILE_IMAGE_URL + user.avatar}
+                src={ user.avatar}
                 alt={user.name}
               />
             </Link>
