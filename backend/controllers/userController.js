@@ -40,13 +40,13 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   }).select("+password");
 
   if (!user) {
-    return next(new ErrorHandler("User doesn't exist", 401));
+    return next(new ErrorHandler("Tài khoản đã tồn tại", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
 
   if (!isPasswordMatched) {
-    return next(new ErrorHandler("Password doesn't match", 401));
+    return next(new ErrorHandler("Mật khẩu không đúng", 401));
   }
 
   sendCookie(user, 201, res);
