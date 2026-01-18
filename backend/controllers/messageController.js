@@ -13,7 +13,7 @@ exports.newMessage = catchAsync(async (req, res, next) => {
 
   const images =
     req.files && req.files.length > 0
-      ? req.files.map((file) => file.filename)
+      ? req.files.map((file) => file.path)
       : [];
   if (images.length > 0) {
     const message = await Message.create({
