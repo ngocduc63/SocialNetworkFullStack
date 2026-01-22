@@ -173,7 +173,7 @@ const PostsContainer = ({ postId }) => {
     <>
       <div className="flex flex-col w-full lg:w-2/3 sm:mt-6 sm:px-8 mb-8">
         {/* Hiển thị StoriesContainer chỉ khi không xem bài đăng đơn lẻ */}
-        {!postId && <StoriesContainer />}
+        {/* {!postId && <StoriesContainer />} */}
 
         {/* Hiển thị bài đăng đơn lẻ khi có postId */}
         {postId ? (
