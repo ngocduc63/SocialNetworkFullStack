@@ -56,7 +56,7 @@ const UserSelect = ({ formData, setFormData }) => {
           <Space>
             <Tooltip title={user.name}>
               <img
-                src={`${BASE_PROFILE_IMAGE_URL}${user.avatar}`}
+                src={`${user.avatar}`}
                 alt={user.name}
                 width="28"
                 height="28"

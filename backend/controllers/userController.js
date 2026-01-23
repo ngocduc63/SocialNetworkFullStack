@@ -40,7 +40,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   }).select("+password");
 
   if (!user) {
-    return next(new ErrorHandler("Tài khoản đã tồn tại", 401));
+    return next(new ErrorHandler("Tài khoản không tồn tại", 401));
   }
 
   const isPasswordMatched = await user.comparePassword(password);
